@@ -44,6 +44,9 @@ namespace vs_h
 
             _logManager = new LogManager();
         }
+
+        
+
         private Dictionary<string, double> LoadExposureMapFromModels()
         {
             var map = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
@@ -169,8 +172,8 @@ namespace vs_h
 
                     // Create PictureBox for this camera
                     var pb = new PictureBox();
-                    pb.Width = 560;
-                    pb.Height = 400;
+                    pb.Width = 770;
+                    pb.Height = 560;
                     pb.SizeMode = PictureBoxSizeMode.Zoom;
                     pb.BorderStyle = BorderStyle.FixedSingle;
                     pb.Tag = d.SN; // store SN for reference
@@ -226,6 +229,7 @@ namespace vs_h
             {
                 MessageBox.Show("Lỗi khi kết nối camera tự động: " + ex.Message);
             }
+
         }
         private void UpdateRunResultTextbox(int total, int fail, int pass)
         {
@@ -282,7 +286,13 @@ namespace vs_h
                 _logManager?.CleanOldLogs(30);
             }
             catch { }
+
+
+            
         }
+       
+
+  
 
         private async void RUN_KeyDown(object sender, KeyEventArgs e)
         {
@@ -353,6 +363,7 @@ namespace vs_h
                     SetPictureBoxImageSafe(info.Pb, baseBmp);
                 }
             }
+           
 
             e.Handled = true;
         }
@@ -764,6 +775,11 @@ namespace vs_h
                 txtSnRUN.AppendText(Environment.NewLine);
 
             txtSnRUN.AppendText(text ?? "");
+        }
+
+        private void txtResultRUN_TextChanged(object sender, EventArgs e)
+        {
+
         }
 
         //MOdel LOG 

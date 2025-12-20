@@ -63,6 +63,7 @@
             this.contextMenuSMD = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteSMDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelImage = new System.Windows.Forms.Panel();
+            this.panel4 = new System.Windows.Forms.Panel();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -73,16 +74,17 @@
             this.panelControl.SuspendLayout();
             this.contextMenuPOV.SuspendLayout();
             this.contextMenuSMD.SuspendLayout();
-            this.panelImage.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
             this.panel1.Controls.Add(this.txtFinalResult);
             this.panel1.Controls.Add(this.menuStrip1);
-            this.panel1.Location = new System.Drawing.Point(2, 5);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(184, 564);
+            this.panel1.Size = new System.Drawing.Size(184, 585);
             this.panel1.TabIndex = 0;
             // 
             // txtFinalResult
@@ -138,13 +140,15 @@
             // 
             // panel2
             // 
+            this.panel2.BackColor = System.Drawing.SystemColors.ControlLight;
             this.panel2.Controls.Add(this.btnCamera);
             this.panel2.Controls.Add(this.btnTestAllSmd);
             this.panel2.Controls.Add(this.btnPicture);
             this.panel2.Controls.Add(this.btnSave);
-            this.panel2.Location = new System.Drawing.Point(192, 445);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(677, 124);
+            this.panel2.Size = new System.Drawing.Size(706, 224);
             this.panel2.TabIndex = 1;
             // 
             // btnCamera
@@ -191,9 +195,10 @@
             // 
             this.pictureBox1.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.pictureBox1.ContextMenuStrip = this.contextMenuStrip1;
-            this.pictureBox1.Location = new System.Drawing.Point(12, 17);
+            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBox1.Location = new System.Drawing.Point(184, 0);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(662, 401);
+            this.pictureBox1.Size = new System.Drawing.Size(706, 585);
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUp);
@@ -237,9 +242,10 @@
             // 
             // treeView1
             // 
-            this.treeView1.Location = new System.Drawing.Point(7, 7);
+            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(191, 329);
+            this.treeView1.Size = new System.Drawing.Size(259, 585);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
@@ -248,9 +254,10 @@
             // 
             this.panel3.Controls.Add(this.panelControl);
             this.panel3.Controls.Add(this.treeView1);
-            this.panel3.Location = new System.Drawing.Point(875, 5);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel3.Location = new System.Drawing.Point(890, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(212, 564);
+            this.panel3.Size = new System.Drawing.Size(259, 585);
             this.panel3.TabIndex = 2;
             // 
             // panelControl
@@ -264,9 +271,10 @@
             this.panelControl.Controls.Add(this.txtName);
             this.panelControl.Controls.Add(this.label2);
             this.panelControl.Controls.Add(this.label1);
-            this.panelControl.Location = new System.Drawing.Point(7, 342);
+            this.panelControl.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelControl.Location = new System.Drawing.Point(0, 361);
             this.panelControl.Name = "panelControl";
-            this.panelControl.Size = new System.Drawing.Size(204, 221);
+            this.panelControl.Size = new System.Drawing.Size(259, 224);
             this.panelControl.TabIndex = 1;
             // 
             // btnConnectCam
@@ -333,7 +341,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(53, 28);
+            this.label1.Location = new System.Drawing.Point(39, 28);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(35, 13);
             this.label1.TabIndex = 0;
@@ -371,25 +379,37 @@
             // 
             this.panelImage.AutoScroll = true;
             this.panelImage.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.panelImage.Controls.Add(this.pictureBox1);
-            this.panelImage.Location = new System.Drawing.Point(192, 12);
+            this.panelImage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelImage.Location = new System.Drawing.Point(184, 0);
             this.panelImage.Name = "panelImage";
-            this.panelImage.Size = new System.Drawing.Size(677, 427);
+            this.panelImage.Size = new System.Drawing.Size(706, 585);
             this.panelImage.TabIndex = 4;
+            // 
+            // panel4
+            // 
+            this.panel4.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.panel4.Controls.Add(this.panel2);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel4.Location = new System.Drawing.Point(184, 361);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(706, 224);
+            this.panel4.TabIndex = 5;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(1088, 570);
+            this.ClientSize = new System.Drawing.Size(1149, 585);
+            this.Controls.Add(this.panel4);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.panelImage);
             this.Controls.Add(this.panel3);
-            this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Form1";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
@@ -406,7 +426,7 @@
             this.panelControl.PerformLayout();
             this.contextMenuPOV.ResumeLayout(false);
             this.contextMenuSMD.ResumeLayout(false);
-            this.panelImage.ResumeLayout(false);
+            this.panel4.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -447,6 +467,7 @@
         private System.Windows.Forms.Button btnConnectCam;
         private System.Windows.Forms.ToolStripMenuItem runToolStripMenuItem;
         private System.Windows.Forms.Panel panelImage;
+        private System.Windows.Forms.Panel panel4;
     }
 }
 

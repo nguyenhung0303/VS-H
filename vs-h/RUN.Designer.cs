@@ -31,46 +31,73 @@
             this.flowLayoutPanelRUN = new System.Windows.Forms.FlowLayoutPanel();
             this.txtResultRUN = new System.Windows.Forms.TextBox();
             this.txtSnRUN = new System.Windows.Forms.TextBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // flowLayoutPanelRUN
             // 
             this.flowLayoutPanelRUN.AutoScroll = true;
-            this.flowLayoutPanelRUN.Location = new System.Drawing.Point(12, 25);
+            this.flowLayoutPanelRUN.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.flowLayoutPanelRUN.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanelRUN.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanelRUN.Name = "flowLayoutPanelRUN";
             this.flowLayoutPanelRUN.Padding = new System.Windows.Forms.Padding(8);
-            this.flowLayoutPanelRUN.Size = new System.Drawing.Size(1221, 514);
+            this.flowLayoutPanelRUN.Size = new System.Drawing.Size(980, 455);
             this.flowLayoutPanelRUN.TabIndex = 0;
             this.flowLayoutPanelRUN.Paint += new System.Windows.Forms.PaintEventHandler(this.flowLayoutPanelRUN_Paint);
             // 
             // txtResultRUN
             // 
-            this.txtResultRUN.Location = new System.Drawing.Point(12, 554);
+            this.txtResultRUN.Location = new System.Drawing.Point(3, 12);
             this.txtResultRUN.Multiline = true;
             this.txtResultRUN.Name = "txtResultRUN";
-            this.txtResultRUN.Size = new System.Drawing.Size(451, 101);
+            this.txtResultRUN.Size = new System.Drawing.Size(544, 130);
             this.txtResultRUN.TabIndex = 1;
+            this.txtResultRUN.TextChanged += new System.EventHandler(this.txtResultRUN_TextChanged);
             // 
             // txtSnRUN
             // 
-            this.txtSnRUN.Location = new System.Drawing.Point(59, 670);
+            this.txtSnRUN.Location = new System.Drawing.Point(553, 122);
             this.txtSnRUN.Name = "txtSnRUN";
-            this.txtSnRUN.Size = new System.Drawing.Size(317, 20);
+            this.txtSnRUN.Size = new System.Drawing.Size(146, 20);
             this.txtSnRUN.TabIndex = 2;
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.CadetBlue;
+            this.panel1.Controls.Add(this.richTextBox1);
+            this.panel1.Controls.Add(this.txtResultRUN);
+            this.panel1.Controls.Add(this.txtSnRUN);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(0, 310);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(980, 145);
+            this.panel1.TabIndex = 3;
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Location = new System.Drawing.Point(705, 12);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(263, 130);
+            this.richTextBox1.TabIndex = 3;
+            this.richTextBox1.Text = "";
             // 
             // RUN
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1245, 713);
-            this.Controls.Add(this.txtSnRUN);
-            this.Controls.Add(this.txtResultRUN);
+            this.ClientSize = new System.Drawing.Size(980, 455);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.flowLayoutPanelRUN);
             this.Name = "RUN";
             this.Text = "RUN";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.RUN_Load_1);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -79,5 +106,7 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelRUN;
         private System.Windows.Forms.TextBox txtResultRUN;
         private System.Windows.Forms.TextBox txtSnRUN;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.RichTextBox richTextBox1;
     }
 }
