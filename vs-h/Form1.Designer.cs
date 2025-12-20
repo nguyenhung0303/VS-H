@@ -79,21 +79,22 @@
             // 
             // panel1
             // 
+            this.panel1.BackColor = System.Drawing.Color.LightBlue;
             this.panel1.Controls.Add(this.txtFinalResult);
             this.panel1.Controls.Add(this.menuStrip1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(184, 585);
+            this.panel1.Size = new System.Drawing.Size(256, 425);
             this.panel1.TabIndex = 0;
             // 
             // txtFinalResult
             // 
-            this.txtFinalResult.Location = new System.Drawing.Point(31, 96);
+            this.txtFinalResult.Location = new System.Drawing.Point(3, 46);
             this.txtFinalResult.Multiline = true;
             this.txtFinalResult.Name = "txtFinalResult";
             this.txtFinalResult.ReadOnly = true;
-            this.txtFinalResult.Size = new System.Drawing.Size(117, 44);
+            this.txtFinalResult.Size = new System.Drawing.Size(250, 84);
             this.txtFinalResult.TabIndex = 1;
             this.txtFinalResult.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -104,7 +105,7 @@
             this.runToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(184, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(256, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -140,7 +141,7 @@
             // 
             // panel2
             // 
-            this.panel2.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel2.BackColor = System.Drawing.Color.SteelBlue;
             this.panel2.Controls.Add(this.btnCamera);
             this.panel2.Controls.Add(this.btnTestAllSmd);
             this.panel2.Controls.Add(this.btnPicture);
@@ -148,7 +149,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(706, 224);
+            this.panel2.Size = new System.Drawing.Size(446, 86);
             this.panel2.TabIndex = 1;
             // 
             // btnCamera
@@ -196,9 +197,9 @@
             this.pictureBox1.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.pictureBox1.ContextMenuStrip = this.contextMenuStrip1;
             this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox1.Location = new System.Drawing.Point(184, 0);
+            this.pictureBox1.Location = new System.Drawing.Point(256, 0);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(706, 585);
+            this.pictureBox1.Size = new System.Drawing.Size(446, 425);
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUp);
@@ -242,10 +243,11 @@
             // 
             // treeView1
             // 
+            this.treeView1.BackColor = System.Drawing.Color.White;
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(259, 585);
+            this.treeView1.Size = new System.Drawing.Size(259, 425);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
@@ -255,14 +257,14 @@
             this.panel3.Controls.Add(this.panelControl);
             this.panel3.Controls.Add(this.treeView1);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel3.Location = new System.Drawing.Point(890, 0);
+            this.panel3.Location = new System.Drawing.Point(702, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(259, 585);
+            this.panel3.Size = new System.Drawing.Size(259, 425);
             this.panel3.TabIndex = 2;
             // 
             // panelControl
             // 
-            this.panelControl.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.panelControl.BackColor = System.Drawing.Color.LightBlue;
             this.panelControl.Controls.Add(this.btnConnectCam);
             this.panelControl.Controls.Add(this.label3);
             this.panelControl.Controls.Add(this.cbListCamera);
@@ -272,7 +274,7 @@
             this.panelControl.Controls.Add(this.label2);
             this.panelControl.Controls.Add(this.label1);
             this.panelControl.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelControl.Location = new System.Drawing.Point(0, 361);
+            this.panelControl.Location = new System.Drawing.Point(0, 201);
             this.panelControl.Name = "panelControl";
             this.panelControl.Size = new System.Drawing.Size(259, 224);
             this.panelControl.TabIndex = 1;
@@ -380,9 +382,9 @@
             this.panelImage.AutoScroll = true;
             this.panelImage.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.panelImage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelImage.Location = new System.Drawing.Point(184, 0);
+            this.panelImage.Location = new System.Drawing.Point(256, 0);
             this.panelImage.Name = "panelImage";
-            this.panelImage.Size = new System.Drawing.Size(706, 585);
+            this.panelImage.Size = new System.Drawing.Size(446, 425);
             this.panelImage.TabIndex = 4;
             // 
             // panel4
@@ -390,9 +392,9 @@
             this.panel4.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.panel4.Controls.Add(this.panel2);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel4.Location = new System.Drawing.Point(184, 361);
+            this.panel4.Location = new System.Drawing.Point(256, 339);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(706, 224);
+            this.panel4.Size = new System.Drawing.Size(446, 86);
             this.panel4.TabIndex = 5;
             // 
             // Form1
@@ -400,7 +402,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(1149, 585);
+            this.ClientSize = new System.Drawing.Size(961, 425);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.panelImage);

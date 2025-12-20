@@ -12,6 +12,7 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Drawing.Drawing2D;
+using System.IO.Ports;
 
 namespace vs_h
 {
@@ -23,6 +24,13 @@ namespace vs_h
             public string SN { get; set; }
             public PictureBox Pb { get; set; }
         }
+
+        private SerialPort _sp;
+        private readonly StringBuilder _rxBuf = new StringBuilder();
+
+        // dùng để chờ phản hồi sau khi gửi
+        private readonly object _waitLock = new object();
+        private TaskCompletionSource<string> _waitTcs; // sẽ set "PASS"/"FAIL"
 
         private LogManager _logManager;
         private string _currentQrSerialNumber = null;
@@ -76,6 +84,16 @@ namespace vs_h
             }
 
             return map;
+        }
+        private void AppendLog(string text)
+        {
+            if (richTextBox1.InvokeRequired)
+            {
+                richTextBox1.BeginInvoke(new Action(() => AppendLog(text)));
+                return;
+            }
+            richTextBox1.AppendText($"{DateTime.Now:HH:mm:ss.fff} {text}\r\n");
+            richTextBox1.ScrollToCaret();
         }
         private void ApplyExposureForSn(CamInfo ci)
         {
@@ -229,7 +247,119 @@ namespace vs_h
             {
                 MessageBox.Show("Lỗi khi kết nối camera tự động: " + ex.Message);
             }
+            try
+            {
+                _sp = new SerialPort("COM7", 9600, Parity.None, 8, StopBits.One);
+                _sp.NewLine = "\r\n";
+                _sp.DataReceived += Sp_DataReceived;
+                _sp.Open();
 
+                AppendLog("[OPEN] COM7 opened");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Không mở được COM7: " + ex.Message);
+            }
+
+        }
+        private void Sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            try
+            {
+                string chunk = _sp.ReadExisting();
+                if (string.IsNullOrEmpty(chunk)) return;
+
+                lock (_rxBuf)
+                {
+                    _rxBuf.Append(chunk);
+
+                    while (true)
+                    {
+                        string all = _rxBuf.ToString();
+                        int idx = all.IndexOf("\r\n", StringComparison.Ordinal);
+                        if (idx < 0) break;
+
+                        string line = all.Substring(0, idx);
+                        _rxBuf.Remove(0, idx + 2);
+
+                        AppendLog("[RX] " + line);
+
+                        // nếu line có PASS/FAIL thì báo cho “task đang chờ”
+                        if (line.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) >= 0)
+                            TryCompleteWait("PASS");
+                        else if (line.IndexOf("FAIL", StringComparison.OrdinalIgnoreCase) >= 0)
+                            TryCompleteWait("FAIL"); // optional, nếu bạn muốn xử lý FAIL
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AppendLog("[RX-ERR] " + ex.Message);
+            }
+        }
+        private async Task SendAndWaitResultAsync(string sn)
+        {
+            if (_sp == null || !_sp.IsOpen)
+            {
+                AppendLog("[ERR] COM7 not open");
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(sn)) return;
+
+            // tạo Task chờ kết quả mới (hủy cái cũ nếu có)
+            TaskCompletionSource<string> tcs;
+            lock (_waitLock)
+            {
+                _waitTcs?.TrySetCanceled();
+                _waitTcs = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
+                tcs = _waitTcs;
+            }
+
+            // set trạng thái WAIT
+            SetResultUI("WAIT", Color.Gold, Color.Black);
+
+            // format: SN + 13 spaces + CHECK_CCD+++ + \r\n
+            string msg = sn + new string(' ', 13) + "CHECK_CCD+++\r\n";
+            _sp.Write(msg);
+            AppendLog("[TX] " + msg.Replace("\r", "\\r").Replace("\n", "\\n"));
+
+            // chờ tối đa 5s
+            var done = await Task.WhenAny(tcs.Task, Task.Delay(5000));
+
+            if (done != tcs.Task)
+            {
+                // timeout => SFC
+                SetResultUI("SFC", Color.OrangeRed, Color.White);
+                AppendLog("[TIMEOUT] No response in 5s -> SFC");
+                return;
+            }
+
+            // có kết quả
+            string res = await tcs.Task; // "PASS"/"FAIL"
+            if (string.Equals(res, "PASS", StringComparison.OrdinalIgnoreCase))
+                SetResultUI("PASS", Color.LimeGreen, Color.Black);
+            else
+                SetResultUI("FAIL", Color.Red, Color.White); // nếu bạn muốn
+        }
+
+        private void SetResultUI(string text, Color bg, Color fg)
+        {
+            if (txtResultRUN.InvokeRequired)
+            {
+                txtResultRUN.BeginInvoke(new Action(() => SetResultUI(text, bg, fg)));
+                return;
+            }
+            txtResultRUN.Text = text;
+            txtResultRUN.BackColor = bg;
+            txtResultRUN.ForeColor = fg;
+        }
+
+        private void TryCompleteWait(string result)
+        {
+            lock (_waitLock)
+            {
+                _waitTcs?.TrySetResult(result);
+            }
         }
         private void UpdateRunResultTextbox(int total, int fail, int pass)
         {
@@ -277,7 +407,6 @@ namespace vs_h
                 }
                 catch { }
             }
-
             _camInfos.Clear();
 
             // Dọn dẹp log cũ hơn 30 ngày (optional)
@@ -287,12 +416,10 @@ namespace vs_h
             }
             catch { }
 
-
-            
+            try { if (_sp != null && _sp.IsOpen) _sp.Close(); } catch { }
+            try { _sp?.Dispose(); } catch { }
         }
-       
-
-  
+        //com
 
         private async void RUN_KeyDown(object sender, KeyEventArgs e)
         {
@@ -341,6 +468,18 @@ namespace vs_h
 
             // 3) Test -> lấy danh sách ROI PASS/FAIL theo SN
             Dictionary<string, List<RoiDraw>> drawMap = PerformChecksForCaptured(snToFile);
+            // commm
+            if (txtResultRUN.Text == "PASS")
+            {
+                // Lấy SN (bạn đang append nhiều dòng "CameraSN: decoded")
+                // Tạm thời lấy dòng cuối cùng:
+                string Sn = txtSnRUN.Lines.LastOrDefault()?.Trim();
+                if (!string.IsNullOrWhiteSpace(Sn))
+                {
+                    string msg = Sn + new string(' ', 13) + "CHECK_CCD+++\r\n";
+                    try { _sp?.Write(msg); } catch { }
+                }
+            }
 
             // 4) Vẽ ROI lên ảnh và show lên từng PictureBox
             for (int i = 0; i < _camInfos.Count; i++)
@@ -363,9 +502,15 @@ namespace vs_h
                     SetPictureBoxImageSafe(info.Pb, baseBmp);
                 }
             }
-           
-
             e.Handled = true;
+
+            string sn = _currentQrSerialNumber;
+
+            // chỉ gửi khi PASS
+            if (string.Equals(txtResultRUN.Text, "PASS", StringComparison.OrdinalIgnoreCase))
+            {
+                await SendAndWaitResultAsync(sn);
+            }
         }
 
 
@@ -499,7 +644,8 @@ namespace vs_h
                                             if (string.IsNullOrWhiteSpace(_currentQrSerialNumber))
                                                 _currentQrSerialNumber = decoded;
 
-                                            SetTxtSnRUN($"{pov.CameraSN}: {decoded}", append: true);
+                                            //SetTxtSnRUN($"{pov.CameraSN}: {decoded}", append: true);
+                                            SetTxtSnRUN($"{decoded}", append: true);
                                         }
                                         else
                                         {

@@ -39,7 +39,7 @@
             // flowLayoutPanelRUN
             // 
             this.flowLayoutPanelRUN.AutoScroll = true;
-            this.flowLayoutPanelRUN.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.flowLayoutPanelRUN.BackColor = System.Drawing.Color.PowderBlue;
             this.flowLayoutPanelRUN.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanelRUN.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanelRUN.Name = "flowLayoutPanelRUN";
@@ -50,18 +50,22 @@
             // 
             // txtResultRUN
             // 
-            this.txtResultRUN.Location = new System.Drawing.Point(3, 12);
+            this.txtResultRUN.Enabled = false;
+            this.txtResultRUN.Font = new System.Drawing.Font("Microsoft Sans Serif", 72F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtResultRUN.Location = new System.Drawing.Point(15, 29);
             this.txtResultRUN.Multiline = true;
             this.txtResultRUN.Name = "txtResultRUN";
-            this.txtResultRUN.Size = new System.Drawing.Size(544, 130);
+            this.txtResultRUN.Size = new System.Drawing.Size(532, 130);
             this.txtResultRUN.TabIndex = 1;
             this.txtResultRUN.TextChanged += new System.EventHandler(this.txtResultRUN_TextChanged);
             // 
             // txtSnRUN
             // 
-            this.txtSnRUN.Location = new System.Drawing.Point(553, 122);
+            this.txtSnRUN.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSnRUN.Location = new System.Drawing.Point(582, 116);
+            this.txtSnRUN.Multiline = true;
             this.txtSnRUN.Name = "txtSnRUN";
-            this.txtSnRUN.Size = new System.Drawing.Size(146, 20);
+            this.txtSnRUN.Size = new System.Drawing.Size(240, 43);
             this.txtSnRUN.TabIndex = 2;
             // 
             // panel1
@@ -71,16 +75,17 @@
             this.panel1.Controls.Add(this.txtResultRUN);
             this.panel1.Controls.Add(this.txtSnRUN);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 310);
+            this.panel1.Location = new System.Drawing.Point(0, 269);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(980, 145);
+            this.panel1.Size = new System.Drawing.Size(980, 186);
             this.panel1.TabIndex = 3;
             // 
             // richTextBox1
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(705, 12);
+            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Right;
+            this.richTextBox1.Location = new System.Drawing.Point(717, 0);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(263, 130);
+            this.richTextBox1.Size = new System.Drawing.Size(263, 186);
             this.richTextBox1.TabIndex = 3;
             this.richTextBox1.Text = "";
             // 
