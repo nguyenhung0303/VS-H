@@ -1,0 +1,772 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Cong1;
+using System.IO;
+using Newtonsoft.Json;
+using System.Diagnostics;
+using System.Drawing.Drawing2D;
+
+namespace vs_h
+{
+    public partial class RUN : Form
+    {
+        private class CamInfo
+        {
+            public MindVisionCamera Cam { get; set; }
+            public string SN { get; set; }
+            public PictureBox Pb { get; set; }
+        }
+
+        private LogManager _logManager;
+        private string _currentQrSerialNumber = null;
+
+        private readonly List<CamInfo> _camInfos = new List<CamInfo>();
+
+        private Dictionary<string, double> _snToExposure = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
+
+
+
+        public RUN()
+        {
+            InitializeComponent();
+            this.Load += RUN_Load;
+
+            this.FormClosing += RUN_FormClosing;
+            this.KeyPreview = true;
+            this.KeyDown += RUN_KeyDown;
+
+            _logManager = new LogManager();
+        }
+        private Dictionary<string, double> LoadExposureMapFromModels()
+        {
+            var map = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
+
+            string modelsDir = Path.GetFullPath(Path.Combine(Application.StartupPath, "..", "..", "Models"));
+            if (!Directory.Exists(modelsDir)) return map;
+
+            foreach (var file in Directory.GetFiles(modelsDir, "*.json"))
+            {
+                try
+                {
+                    var json = File.ReadAllText(file);
+                    var m = JsonConvert.DeserializeObject<model.Model>(json);
+                    if (m == null || m.POVs == null) continue;
+
+                    foreach (var pov in m.POVs)
+                    {
+                        if (pov == null) continue;
+                        if (string.IsNullOrWhiteSpace(pov.CameraSN)) continue;
+
+                        // Nếu 1 SN xuất hiện nhiều lần ở nhiều model/POV:
+                        // ✅ Ở đây mình chọn "giá trị cuối cùng đọc được"
+                        map[pov.CameraSN] = pov.ExposureTime;
+                    }
+                }
+                catch { }
+            }
+
+            return map;
+        }
+        private void ApplyExposureForSn(CamInfo ci)
+        {
+            if (ci == null || ci.Cam == null) return;
+            double exp;
+            if (_snToExposure.TryGetValue(ci.SN, out exp))
+            {
+                ci.Cam.SetExposureTime(exp);
+                Debug.WriteLine($"RUN: Apply exposure SN={ci.SN} exp={exp}");
+            }
+        }
+        private class RoiDraw
+        {
+            public Rectangle Rect;
+            public bool Pass;
+            public string Text;
+        }
+
+        private Bitmap DrawRoisOnBitmap(Bitmap src, List<RoiDraw> rois)
+        {
+            if (src == null) return null;
+            if (rois == null || rois.Count == 0) return (Bitmap)src.Clone();
+
+            Bitmap b = (Bitmap)src.Clone();
+
+            using (Graphics g = Graphics.FromImage(b))
+            {
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+
+                for (int i = 0; i < rois.Count; i++)
+                {
+                    RoiDraw r = rois[i];
+                    if (r.Rect.Width <= 0 || r.Rect.Height <= 0) continue;
+
+                    using (Pen pen = new Pen(r.Pass ? Color.Lime : Color.Red, 3))
+                    {
+                        g.DrawRectangle(pen, r.Rect);
+                    }
+
+                    // Vẽ tên ROI/SMD (tuỳ chọn)
+                    if (!string.IsNullOrEmpty(r.Text))
+                    {
+                        using (Font font = new Font("Arial", 10, FontStyle.Bold))
+                        {
+                            SizeF sz = g.MeasureString(r.Text, font);
+                            float x = r.Rect.X;
+                            float y = r.Rect.Y - sz.Height - 2;
+                            if (y < 0) y = r.Rect.Y + 2;
+
+                            RectangleF bg = new RectangleF(x, y, sz.Width + 6, sz.Height + 2);
+                            using (Brush bgBrush = new SolidBrush(Color.FromArgb(140, 0, 0, 0)))
+                                g.FillRectangle(bgBrush, bg);
+
+                            using (Brush txtBrush = new SolidBrush(r.Pass ? Color.Lime : Color.Red))
+                                g.DrawString(r.Text, font, txtBrush, x + 3, y + 1);
+                        }
+                    }
+                }
+            }
+
+            return b;
+        }
+
+        private void SetPictureBoxImageSafe(PictureBox pb, Bitmap bmp)
+        {
+            if (pb == null || bmp == null) return;
+
+            if (pb.InvokeRequired)
+            {
+                pb.Invoke((Action)(() => SetPictureBoxImageSafe(pb, bmp)));
+                return;
+            }
+
+            Image old = pb.Image;
+            pb.Image = bmp;
+            pb.SizeMode = PictureBoxSizeMode.Zoom;
+            if (old != null) old.Dispose();
+        }
+
+        private async void RUN_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                var devs = MindVisionCamera.GetDeviceList();
+                if (devs == null || devs.Count == 0)
+                {
+                    // No cameras found; nothing to connect
+                    return;
+                }
+                _snToExposure = LoadExposureMapFromModels();
+                foreach (var d in devs)
+                {
+                    var cam = new MindVisionCamera();
+
+                    // Create PictureBox for this camera
+                    var pb = new PictureBox();
+                    pb.Width = 560;
+                    pb.Height = 400;
+                    pb.SizeMode = PictureBoxSizeMode.Zoom;
+                    pb.BorderStyle = BorderStyle.FixedSingle;
+                    pb.Tag = d.SN; // store SN for reference
+
+                    // Add label overlay if desired
+                    var panel = new Panel();
+                    panel.Padding = new Padding(4);
+                    panel.Width = pb.Width + 8;
+                    panel.Height = pb.Height + 24;
+
+                    var lbl = new Label();
+                    lbl.Text = string.IsNullOrEmpty(d.Friendly) ? d.Product : d.Friendly;
+                    lbl.Dock = DockStyle.Top;
+                    lbl.Height = 18;
+
+                    panel.Controls.Add(pb);
+                    panel.Controls.Add(lbl);
+                    lbl.BringToFront();
+                    pb.Dock = DockStyle.Bottom;
+
+                    flowLayoutPanelRUN.Controls.Add(panel);
+
+                    // attempt to open and start stream
+                    int openRet = await Task.Run(() => cam.Open(d.SN, IntPtr.Zero));
+                    if (openRet <= 0)
+                    {
+                        // failed to open, indicate on label
+                        lbl.Text += " (open failed)";
+                        continue;
+                    }
+
+                    int strRet = await Task.Run(() => cam.StartStream());
+                    ApplyExposureForSn(new CamInfo { Cam = cam, SN = d.SN, Pb = pb });
+                    if (strRet <= 0)
+                    {
+                        lbl.Text += " (stream failed)";
+                        // keep camera in list though
+                    }
+
+                    // store info for later captures
+                    _camInfos.Add(new CamInfo { Cam = cam, SN = d.SN, Pb = pb });
+
+                }
+
+                // Optionally notify user (silent if none connected)
+                if (_camInfos.Count > 0)
+                {
+                    // small, non-blocking notification
+                    Task.Run(() => { System.Diagnostics.Debug.WriteLine($"RUN: Connected {_camInfos.Count} camera(s)"); });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi kết nối camera tự động: " + ex.Message);
+            }
+        }
+        private void UpdateRunResultTextbox(int total, int fail, int pass)
+        {
+            // nếu gọi từ thread khác thì marshal về UI
+            if (txtResultRUN.InvokeRequired)
+            {
+                txtResultRUN.Invoke(new Action(() => UpdateRunResultTextbox(total, fail, pass)));
+                return;
+            }
+
+            if (total <= 0)
+            {
+                txtResultRUN.Text = "NO DATA";
+                txtResultRUN.BackColor = Color.Gray;
+                txtResultRUN.ForeColor = Color.White;
+                return;
+            }
+
+            bool isPass = (fail == 0);
+            if (isPass)
+            {
+                txtResultRUN.Text = "PASS";
+                txtResultRUN.BackColor = Color.LimeGreen;
+                txtResultRUN.ForeColor = Color.Black;
+            }
+            else
+            {
+                txtResultRUN.Text = "FAIL";
+                txtResultRUN.BackColor = Color.Red;
+                txtResultRUN.ForeColor = Color.White;
+            }
+        }
+
+        private void RUN_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            foreach (var info in _camInfos.ToList())
+            {
+                try
+                {
+                    if (info.Cam.IsConnected)
+                    {
+                        try { info.Cam.StopStream(); } catch { }
+                        try { info.Cam.Close(); } catch { }
+                    }
+                }
+                catch { }
+            }
+
+            _camInfos.Clear();
+
+            // Dọn dẹp log cũ hơn 30 ngày (optional)
+            try
+            {
+                _logManager?.CleanOldLogs(30);
+            }
+            catch { }
+        }
+
+        private async void RUN_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode != Keys.Space) return;
+
+            if (_camInfos.Count == 0)
+            {
+                MessageBox.Show("Không có camera nào kết nối.");
+                return;
+            }
+            SetTxtSnRUN("", append: false);
+            // 1) GrabFrame song song
+            var tasks = _camInfos.Select(ci => Task.Run(() => ci.Cam.GrabFrame(1000))).ToArray();
+
+            Bitmap[] bitmaps = null;
+            try { bitmaps = await Task.WhenAll(tasks); }
+            catch { bitmaps = null; }
+
+            // 2) Lưu file cho HALCON + giữ bitmap để hiển thị
+            var snToFile = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var snToBitmap = new Dictionary<string, Bitmap>(StringComparer.OrdinalIgnoreCase);
+
+            for (int i = 0; i < _camInfos.Count; i++)
+            {
+                CamInfo info = _camInfos[i];
+                Bitmap bmp = (bitmaps != null && i < bitmaps.Length) ? bitmaps[i] : null;
+
+                if (bmp == null) continue;
+
+                // giữ clone để hiển thị (không dispose clone)
+                snToBitmap[info.SN] = (Bitmap)bmp.Clone();
+
+                try
+                {
+                    string dir = Path.Combine(Application.StartupPath, "Captured");
+                    Directory.CreateDirectory(dir);
+                    string filePath = Path.Combine(dir, $"run_{info.SN}_{DateTime.Now:yyyyMMdd_HHmmss_fff}.png");
+                    bmp.Save(filePath, System.Drawing.Imaging.ImageFormat.Png);
+                    snToFile[info.SN] = filePath;
+                }
+                catch { }
+
+                bmp.Dispose();
+            }
+
+
+            // 3) Test -> lấy danh sách ROI PASS/FAIL theo SN
+            Dictionary<string, List<RoiDraw>> drawMap = PerformChecksForCaptured(snToFile);
+
+            // 4) Vẽ ROI lên ảnh và show lên từng PictureBox
+            for (int i = 0; i < _camInfos.Count; i++)
+            {
+                CamInfo info = _camInfos[i];
+
+                Bitmap baseBmp;
+                if (!snToBitmap.TryGetValue(info.SN, out baseBmp)) continue;
+
+                List<RoiDraw> rois;
+                if (drawMap != null && drawMap.TryGetValue(info.SN, out rois) && rois.Count > 0)
+                {
+                    Bitmap annotated = DrawRoisOnBitmap(baseBmp, rois);
+                    baseBmp.Dispose(); // dispose bản base vì đã có annotated
+                    SetPictureBoxImageSafe(info.Pb, annotated);
+                }
+                else
+                {
+                    // không có ROI thì vẫn hiển thị ảnh gốc
+                    SetPictureBoxImageSafe(info.Pb, baseBmp);
+                }
+            }
+
+            e.Handled = true;
+        }
+
+
+        private Dictionary<string, List<RoiDraw>> PerformChecksForCaptured(Dictionary<string, string> snToFile)
+        {
+            var drawMap = new Dictionary<string, List<RoiDraw>>(StringComparer.OrdinalIgnoreCase);
+
+            // Reset QR serial number cho lần test mới
+            _currentQrSerialNumber = null;
+
+            // Dictionary để lưu ảnh HSV cần log: Key = CameraSN, Value = (Bitmap, isPass, povName)
+            var hsvImagesToLog = new Dictionary<string, List<(Bitmap Image, bool IsPass, string PovName)>>(StringComparer.OrdinalIgnoreCase);
+
+            try
+            {
+                string modelsDir = Path.GetFullPath(Path.Combine(Application.StartupPath, "..", "..", "Models"));
+                if (!Directory.Exists(modelsDir))
+                {
+                    MessageBox.Show("Thư mục Models không tồn tại.");
+                    return drawMap;
+                }
+
+                int total = 0, pass = 0, fail = 0, skip = 0;
+                var details = new StringBuilder();
+
+                foreach (var file in Directory.GetFiles(modelsDir, "*.json"))
+                {
+                    try
+                    {
+                        var json = File.ReadAllText(file);
+                        var model = JsonConvert.DeserializeObject<model.Model>(json);
+                        if (model == null) continue;
+
+                        foreach (var pov in model.POVs)
+                        {
+                            if (pov == null) continue;
+                            if (string.IsNullOrWhiteSpace(pov.CameraSN)) continue;
+                            if (!snToFile.ContainsKey(pov.CameraSN)) continue;
+
+                            string imgPath = snToFile[pov.CameraSN];
+                            if (!File.Exists(imgPath))
+                            {
+                                details.AppendLine($"[SKIP] {model.Name}/{pov.Name}: ảnh không tồn tại");
+                                continue;
+                            }
+
+                            if (!drawMap.ContainsKey(pov.CameraSN))
+                                drawMap[pov.CameraSN] = new List<RoiDraw>();
+
+                            using (var img = new HalconDotNet.HImage(imgPath))
+                            {
+                                // Biến để track xem POV này có HSV test nào không
+                                bool hasHsvTest = false;
+                                bool povAllHsvPass = true; // Giả định ban đầu là PASS
+
+                                foreach (var smd in pov.SMDs)
+                                {
+                                    total++;
+
+                                    if (smd == null || !smd.IsEnabled)
+                                    {
+                                        skip++;
+                                        details.AppendLine($"[SKIP] {model.Name}/{pov.Name}/{smd?.Name}: IsEnabled=false");
+                                        continue;
+                                    }
+
+                                    if (smd.ROI == null || smd.ROI.Width <= 0 || smd.ROI.Height <= 0)
+                                    {
+                                        fail++;
+                                        details.AppendLine($"[FAIL] {model.Name}/{pov.Name}/{smd.Name}: ROI invalid");
+                                        continue;
+                                    }
+
+                                    // ===== HSV =====
+                                    if (string.Equals(smd.Algorithm, "HSV", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        hasHsvTest = true;
+
+                                        if (smd.HSV == null)
+                                        {
+                                            fail++;
+                                            povAllHsvPass = false;
+                                            details.AppendLine($"[FAIL] {model.Name}/{pov.Name}/{smd.Name}: HSV null");
+                                            drawMap[pov.CameraSN].Add(new RoiDraw
+                                            {
+                                                Rect = ToRect(smd.ROI),
+                                                Pass = false,
+                                                Text = "HSV null"
+                                            });
+                                            continue;
+                                        }
+
+                                        double score = ComputeHsvScoreArea(img, smd);
+                                        bool isPass = (score >= smd.HSV.ScoreMin && score <= smd.HSV.ScoreMax);
+
+                                        if (isPass)
+                                        {
+                                            pass++;
+                                            details.AppendLine($"[PASS] {model.Name}/{pov.Name}/{smd.Name}: HSV score={score:0}");
+                                        }
+                                        else
+                                        {
+                                            fail++;
+                                            povAllHsvPass = false;
+                                            details.AppendLine($"[FAIL] {model.Name}/{pov.Name}/{smd.Name}: HSV score={score:0}");
+                                        }
+
+                                        drawMap[pov.CameraSN].Add(new RoiDraw
+                                        {
+                                            Rect = ToRect(smd.ROI),
+                                            Pass = isPass,
+                                            Text = $"HSV:{score:0}"
+                                        });
+
+                                        continue;
+                                    }
+
+                                    // ===== QR / CODE =====
+                                    if (string.Equals(smd.Algorithm, "QR", StringComparison.OrdinalIgnoreCase) ||
+                                        string.Equals(smd.Algorithm, "CODE", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        string decoded, err;
+                                        bool ok = TryReadQrInRoi(img, smd.ROI, out decoded, out err);
+
+                                        if (ok)
+                                        {
+                                            pass++;
+                                            details.AppendLine($"[PASS] {model.Name}/{pov.Name}/{smd.Name}: QR='{decoded}'");
+
+                                            // Lưu QR serial number (lấy cái đầu tiên)
+                                            if (string.IsNullOrWhiteSpace(_currentQrSerialNumber))
+                                                _currentQrSerialNumber = decoded;
+
+                                            SetTxtSnRUN($"{pov.CameraSN}: {decoded}", append: true);
+                                        }
+                                        else
+                                        {
+                                            fail++;
+                                            details.AppendLine($"[FAIL] {model.Name}/{pov.Name}/{smd.Name}: QR fail ({err})");
+                                        }
+
+                                        drawMap[pov.CameraSN].Add(new RoiDraw
+                                        {
+                                            Rect = ToRect(smd.ROI),
+                                            Pass = ok,
+                                            Text = ok ? $"QR:{decoded}" : "QR:FAIL"
+                                        });
+
+                                        continue;
+                                    }
+
+                                    // ===== thuật toán khác =====
+                                    skip++;
+                                    details.AppendLine($"[SKIP] {model.Name}/{pov.Name}/{smd.Name}: Algorithm={smd.Algorithm}");
+                                }
+
+                                // Sau khi xử lý hết các SMD của POV này
+                                // Nếu có HSV test, lưu ảnh vào danh sách để log
+                                if (hasHsvTest)
+                                {
+                                    try
+                                    {
+                                        // Load lại ảnh từ file để lưu
+                                        using (var bmpToLog = new Bitmap(imgPath))
+                                        {
+                                            Bitmap clonedBmp = (Bitmap)bmpToLog.Clone();
+
+                                            if (!hsvImagesToLog.ContainsKey(pov.CameraSN))
+                                                hsvImagesToLog[pov.CameraSN] = new List<(Bitmap, bool, string)>();
+
+                                            hsvImagesToLog[pov.CameraSN].Add((clonedBmp, povAllHsvPass, pov.Name));
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        details.AppendLine($"[WARNING] Không thể load ảnh để log: {ex.Message}");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        details.AppendLine($"Error model file {Path.GetFileName(file)}: {ex.Message}");
+                    }
+                }
+
+                UpdateRunResultTextbox(total, fail, pass);
+
+                // Lưu ảnh HSV vào LOG sau khi đã có QR serial number
+                if (!string.IsNullOrWhiteSpace(_currentQrSerialNumber) && hsvImagesToLog.Count > 0)
+                {
+                    foreach (var kvp in hsvImagesToLog)
+                    {
+                        string cameraSN = kvp.Key;
+                        foreach (var imgInfo in kvp.Value)
+                        {
+                            try
+                            {
+                                string savedPath = _logManager.SaveImage(
+                                    imgInfo.Image,
+                                    _currentQrSerialNumber,
+                                    cameraSN,
+                                    imgInfo.IsPass,
+                                    imgInfo.PovName
+                                );
+
+                                if (!string.IsNullOrWhiteSpace(savedPath))
+                                {
+                                    details.AppendLine($"[LOG] Saved: {Path.GetFileName(savedPath)}");
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                details.AppendLine($"[LOG ERROR] {ex.Message}");
+                            }
+                            finally
+                            {
+                                // Dispose bitmap sau khi lưu
+                                imgInfo.Image?.Dispose();
+                            }
+                        }
+                    }
+                }
+                else if (hsvImagesToLog.Count > 0)
+                {
+                    // Nếu không có QR code, dispose tất cả bitmap
+                    foreach (var kvp in hsvImagesToLog)
+                    {
+                        foreach (var imgInfo in kvp.Value)
+                        {
+                            imgInfo.Image?.Dispose();
+                        }
+                    }
+                    details.AppendLine("[WARNING] Không lưu LOG vì không đọc được QR code");
+                }
+
+                return drawMap;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi kiểm tra: " + ex.Message);
+
+                // Cleanup nếu có lỗi
+                if (hsvImagesToLog != null)
+                {
+                    foreach (var kvp in hsvImagesToLog)
+                    {
+                        foreach (var imgInfo in kvp.Value)
+                        {
+                            imgInfo.Image?.Dispose();
+                        }
+                    }
+                }
+
+                return drawMap;
+            }
+        }
+
+        private void ShowLogStatistics()
+        {
+            var stats = _logManager.GetStatistics();
+
+            var sb = new StringBuilder();
+            sb.AppendLine("=== THỐNG KÊ LOG ===");
+            sb.AppendLine();
+
+            foreach (var kvp in stats.OrderByDescending(x => x.Key))
+            {
+                sb.AppendLine($"Ngày {kvp.Key}:");
+                sb.AppendLine($"  OK: {kvp.Value.OK}");
+                sb.AppendLine($"  NG: {kvp.Value.NG}");
+                sb.AppendLine($"  Tổng: {kvp.Value.OK + kvp.Value.NG}");
+                sb.AppendLine();
+            }
+
+            MessageBox.Show(sb.ToString(), "Thống kê LOG");
+        }
+
+
+        private double ComputeHsvScoreArea(HalconDotNet.HImage img, model.SMD smd)
+        {
+            // replicate same logic as in Form1
+            using (var roi = new HalconDotNet.HRegion())
+            {
+                double row1 = smd.ROI.Y;
+                double col1 = smd.ROI.X;
+                double row2 = smd.ROI.Y + smd.ROI.Height;
+                double col2 = smd.ROI.X + smd.ROI.Width;
+
+                roi.GenRectangle1(row1, col1, row2, col2);
+
+                using (var imgRoi = img.ReduceDomain(roi))
+                {
+                    HalconDotNet.HObject r, g, b;
+                    HalconDotNet.HOperatorSet.Decompose3(imgRoi, out r, out g, out b);
+
+                    HalconDotNet.HObject h, s, v;
+                    HalconDotNet.HOperatorSet.TransFromRgb(r, g, b, out h, out s, out v, "hsv");
+
+                    int hMin = smd.HSV.HMin;
+                    int hMax = smd.HSV.HMax;
+                    int sMin = smd.HSV.SMin;
+                    int sMax = smd.HSV.SMax;
+
+                    if (hMin > hMax) (hMin, hMax) = (hMax, hMin);
+                    if (sMin > sMax) (sMin, sMax) = (sMax, sMin);
+
+                    HalconDotNet.HObject regSat;
+                    HalconDotNet.HOperatorSet.Threshold(s, out regSat, sMin, sMax);
+
+                    HalconDotNet.HObject hSat;
+                    HalconDotNet.HOperatorSet.ReduceDomain(h, regSat, out hSat);
+
+                    HalconDotNet.HObject regColor;
+                    HalconDotNet.HOperatorSet.Threshold(hSat, out regColor, hMin, hMax);
+
+                    HalconDotNet.HObject conn, sel;
+                    HalconDotNet.HOperatorSet.Connection(regColor, out conn);
+                    HalconDotNet.HOperatorSet.SelectShapeStd(conn, out sel, "max_area", 0);
+
+                    HalconDotNet.HTuple num;
+                    HalconDotNet.HOperatorSet.CountObj(sel, out num);
+                    if (num.I == 0) return 0;
+
+                    HalconDotNet.HTuple area, rr, cc;
+                    HalconDotNet.HOperatorSet.AreaCenter(sel, out area, out rr, out cc);
+                    return area[0].D;
+                }
+            }
+        }
+
+        private void flowLayoutPanelRUN_Paint(object sender, PaintEventArgs e)
+        {
+            // Designer referenced empty handler - no custom painting required.
+        }
+
+        private void RUN_Load_1(object sender, EventArgs e)
+        {
+
+        }
+        private class RoiOverlay
+        {
+            public Rectangle Rect;
+            public Color Color;
+            public string Text; // có thể null
+        }
+
+        private static Rectangle ToRect(model.ROI roi)
+        {
+            // ROI của bạn là double -> convert sang int (tránh lỗi double->int)
+            int x = (int)Math.Round(roi.X);
+            int y = (int)Math.Round(roi.Y);
+            int w = (int)Math.Round(roi.Width);
+            int h = (int)Math.Round(roi.Height);
+
+            if (w < 1) w = 1;
+            if (h < 1) h = 1;
+            return new Rectangle(x, y, w, h);
+        }
+
+
+
+        private bool TryReadQrInRoi(HalconDotNet.HImage img, model.ROI roi, out string decoded, out string err)
+        {
+            decoded = null;
+            err = null;
+
+            try
+            {
+                string codeType = "QR Code";
+                var r = DataCodeReader.ReadInRoi(img, roi.X, roi.Y, roi.Width, roi.Height, codeType);
+
+                if (r == null)
+                {
+                    err = "Reader trả về null";
+                    return false;
+                }
+
+                if (!r.Found)
+                {
+                    err = string.IsNullOrWhiteSpace(r.Error) ? "Không tìm thấy QR" : r.Error;
+                    return false;
+                }
+
+                decoded = (r.DecodedStrings != null && r.DecodedStrings.Count() > 0) ? r.DecodedStrings[0] : "";
+                r.SymbolXLDs?.Dispose();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                err = ex.Message;
+                return false;
+            }
+        }
+        private void SetTxtSnRUN(string text, bool append = false)
+        {
+            if (txtSnRUN.InvokeRequired)
+            {
+                txtSnRUN.Invoke(new Action(() => SetTxtSnRUN(text, append)));
+                return;
+            }
+
+            if (!append) txtSnRUN.Clear();
+
+            if (append && txtSnRUN.TextLength > 0)
+                txtSnRUN.AppendText(Environment.NewLine);
+
+            txtSnRUN.AppendText(text ?? "");
+        }
+
+        //MOdel LOG 
+
+    }
+}

@@ -1,0 +1,243 @@
+{
+  "Name": "test1",
+  "POVs": [
+    {
+      "Name": "POV1",
+      "ExposureTime": 200000.0,
+      "IsEnabled": true,
+      "ImagePath": "C:\\Users\\Administrator\\source\\repos\\nguyenhung0303\\vs-h1\\vs-h\\bin\\Debug\\Captured\\snap_20251219_142809_110.png",
+      "SMDs": [
+        {
+          "Name": "tn1",
+          "IsEnabled": true,
+          "ID": 0,
+          "ROI": {
+            "X": 0.0,
+            "Y": 629.080322265625,
+            "Width": 198.656936645508,
+            "Height": 506.102203369141
+          },
+          "Algorithm": "HSV",
+          "HSV": {
+            "HMin": 0,
+            "HMax": 25,
+            "SMin": 0,
+            "SMax": 255,
+            "ScoreMin": 25000.0,
+            "ScoreMax": 45000.0
+          }
+        },
+        {
+          "Name": "tn2",
+          "IsEnabled": true,
+          "ID": 1,
+          "ROI": {
+            "X": 501.372253417969,
+            "Y": 506.102203369141,
+            "Width": 260.14599609375,
+            "Height": 151.357666015625
+          },
+          "Algorithm": "HSV",
+          "HSV": {
+            "HMin": 16,
+            "HMax": 23,
+            "SMin": 0,
+            "SMax": 255,
+            "ScoreMin": 5000.0,
+            "ScoreMax": 8000.0
+          }
+        },
+        {
+          "Name": "tn3",
+          "IsEnabled": true,
+          "ID": 2,
+          "ROI": {
+            "X": 676.379577636719,
+            "Y": 657.459838867188,
+            "Width": 170.277374267578,
+            "Height": 137.167877197266
+          },
+          "Algorithm": "HSV",
+          "HSV": {
+            "HMin": 14,
+            "HMax": 33,
+            "SMin": 0,
+            "SMax": 255,
+            "ScoreMin": 8000.0,
+            "ScoreMax": 12000.0
+          }
+        },
+        {
+          "Name": "tn4",
+          "IsEnabled": true,
+          "ID": 3,
+          "ROI": {
+            "X": 851.386840820313,
+            "Y": 870.306579589844,
+            "Width": 175.007293701172,
+            "Height": 170.277374267578
+          },
+          "Algorithm": "HSV",
+          "HSV": {
+            "HMin": 0,
+            "HMax": 128,
+            "SMin": 0,
+            "SMax": 255,
+            "ScoreMin": 5000.0,
+            "ScoreMax": 9000.0
+          }
+        },
+        {
+          "Name": "tn5",
+          "IsEnabled": true,
+          "ID": 4,
+          "ROI": {
+            "X": 543.941589355469,
+            "Y": 681.109497070313,
+            "Width": 193.927001953125,
+            "Height": 170.277374267578
+          },
+          "Algorithm": "HSV",
+          "HSV": {
+            "HMin": 54,
+            "HMax": 96,
+            "SMin": 0,
+            "SMax": 255,
+            "ScoreMin": 7000.0,
+            "ScoreMax": 10000.0
+          }
+        },
+        {
+          "Name": "xopleft",
+          "IsEnabled": true,
+          "ID": 5,
+          "ROI": {
+            "X": 458.802917480469,
+            "Y": 964.905151367188,
+            "Width": 449.343078613281,
+            "Height": 189.197082519531
+          },
+          "Algorithm": "HSV",
+          "HSV": {
+            "HMin": 0,
+            "HMax": 102,
+            "SMin": 0,
+            "SMax": 255,
+            "ScoreMin": 10000.0,
+            "ScoreMax": 14000.0
+          }
+        },
+        {
+          "Name": "x1",
+          "IsEnabled": true,
+          "ID": 6,
+          "ROI": {
+            "X": 1348.0291748046875,
+            "Y": 733.138671875,
+            "Width": 151.357666015625,
+            "Height": 231.76641845703125
+          },
+          "Algorithm": "HSV",
+          "HSV": {
+            "HMin": 0,
+            "HMax": 90,
+            "SMin": 69,
+            "SMax": 247,
+            "ScoreMin": 4000.0,
+            "ScoreMax": 7000.0
+          }
+        },
+        {
+          "Name": "x2",
+          "IsEnabled": true,
+          "ID": 7,
+          "ROI": {
+            "X": 2085.89794921875,
+            "Y": 435.15328979492188,
+            "Width": 212.84671020507813,
+            "Height": 179.73722839355469
+          },
+          "Algorithm": "HSV",
+          "HSV": {
+            "HMin": 0,
+            "HMax": 80,
+            "SMin": 0,
+            "SMax": 255,
+            "ScoreMin": 3000.0,
+            "ScoreMax": 6000.0
+          }
+        },
+        {
+          "Name": "x3",
+          "IsEnabled": true,
+          "ID": 8,
+          "ROI": {
+            "X": 2416.99267578125,
+            "Y": 1225.05114746094,
+            "Width": 146.627746582031,
+            "Height": 283.795623779297
+          },
+          "Algorithm": "HSV",
+          "HSV": {
+            "HMin": 0,
+            "HMax": 82,
+            "SMin": 0,
+            "SMax": 255,
+            "ScoreMin": 5000.0,
+            "ScoreMax": 8000.0
+          }
+        },
+        {
+          "Name": "x4",
+          "IsEnabled": true,
+          "ID": 9,
+          "ROI": {
+            "X": 1333.83947753906,
+            "Y": 1225.05114746094,
+            "Width": 165.547454833984,
+            "Height": 222.306579589844
+          },
+          "Algorithm": "HSV",
+          "HSV": {
+            "HMin": 0,
+            "HMax": 83,
+            "SMin": 0,
+            "SMax": 255,
+            "ScoreMin": 4000.0,
+            "ScoreMax": 8000.0
+          }
+        }
+      ],
+      "CameraSN": "024131223062"
+    },
+    {
+      "Name": "POV2",
+      "ExposureTime": 900000.0,
+      "IsEnabled": true,
+      "ImagePath": "C:\\Users\\Administrator\\source\\repos\\nguyenhung0303\\vs-h1\\vs-h\\bin\\Debug\\Captured\\snap_20251219_161431_317.png",
+      "SMDs": [
+        {
+          "Name": "Mac",
+          "IsEnabled": true,
+          "ID": 8,
+          "ROI": {
+            "X": 960.175170898438,
+            "Y": 1338.5693359375,
+            "Width": 1329.10949707031,
+            "Height": 463.532836914063
+          },
+          "Algorithm": "QR",
+          "HSV": {
+            "HMin": 0,
+            "HMax": 0,
+            "SMin": 0,
+            "SMax": 0,
+            "ScoreMin": 0.0,
+            "ScoreMax": 0.0
+          }
+        }
+      ],
+      "CameraSN": "029022810191"
+    }
+  ]
+}
