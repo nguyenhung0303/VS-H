@@ -469,18 +469,19 @@ namespace vs_h
             // 3) Test -> lấy danh sách ROI PASS/FAIL theo SN
             Dictionary<string, List<RoiDraw>> drawMap = PerformChecksForCaptured(snToFile);
             // commm
-            if (txtResultRUN.Text == "PASS")
-            {
-                // Lấy SN (bạn đang append nhiều dòng "CameraSN: decoded")
-                // Tạm thời lấy dòng cuối cùng:
-                string Sn = (txtSnRUN.Lines.LastOrDefault() ?? "").Trim();
-                if (Sn.Length > 13) Sn = Sn.Substring(0, 13);
-                if (!string.IsNullOrWhiteSpace(Sn))
-                {
-                    string msg = Sn + new string(' ', 13) + "CHECK_CCD+++\r\n";
-                    try { _sp?.Write(msg); } catch { }
-                }
-            }
+            //if (txtResultRUN.Text == "PASS")
+            //{
+            //    // Lấy SN (bạn đang append nhiều dòng "CameraSN: decoded")
+            //    // Tạm thời lấy dòng cuối cùng:
+            //    string Sn = (txtSnRUN.Lines.LastOrDefault() ?? "").Trim();
+            //    if (Sn.Length > 12) Sn = Sn.Substring(0, 12);
+            //    MessageBox.Show("SN gửi đi: " + Sn);
+            //    if (!string.IsNullOrWhiteSpace(Sn))
+            //    {
+            //        string msg = Sn + new string(' ', 13) + "CHECK_CCD+++\r\n";
+            //        try { _sp?.Write(msg); } catch { }
+            //    }
+            //}
 
             // 4) Vẽ ROI lên ảnh và show lên từng PictureBox
             for (int i = 0; i < _camInfos.Count; i++)
@@ -505,12 +506,18 @@ namespace vs_h
             }
             e.Handled = true;
 
-            string sn = _currentQrSerialNumber;
-
-            // chỉ gửi khi PASS
             if (string.Equals(txtResultRUN.Text, "PASS", StringComparison.OrdinalIgnoreCase))
             {
-                await SendAndWaitResultAsync(sn);
+                string Sn = (txtSnRUN.Lines.LastOrDefault() ?? "").Trim();
+
+                int dash = Sn.IndexOf('-');
+                if (dash >= 0) Sn = Sn.Substring(0, dash);
+
+                if (Sn.Length > 12) Sn = Sn.Substring(0, 12);
+
+                MessageBox.Show("SN gửi đi: " + Sn);
+
+                await SendAndWaitResultAsync(Sn);   // ✅ gửi đúng SN đã cắt
             }
         }
 
@@ -647,7 +654,7 @@ namespace vs_h
 
                                             //SetTxtSnRUN($"{pov.CameraSN}: {decoded}", append: true);
                                             string sn13 = (decoded ?? "").Trim();
-                                            if (sn13.Length > 13) sn13 = sn13.Substring(0, 13);
+                                            if (sn13.Length > 12) sn13 = sn13.Substring(0, 12);
 
                                             SetTxtSnRUN(sn13, append: true);
                                         }

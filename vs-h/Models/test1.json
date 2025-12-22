@@ -5,7 +5,7 @@
       "Name": "POV1",
       "ExposureTime": 200000.0,
       "IsEnabled": true,
-      "ImagePath": "C:\\Users\\Administrator\\source\\repos\\nguyenhung0303\\vs-h1\\vs-h\\bin\\Debug\\Captured\\snap_20251219_142809_110.png",
+      "ImagePath": "C:\\Users\\Administrator\\source\\repos\\nguyenhung0303\\VS-H\\vs-h\\bin\\Debug\\Captured\\snap_20251222_095953_175.png",
       "SMDs": [
         {
           "Name": "tn1",
@@ -32,19 +32,19 @@
           "IsEnabled": true,
           "ID": 1,
           "ROI": {
-            "X": 501.372253417969,
-            "Y": 506.102203369141,
-            "Width": 260.14599609375,
-            "Height": 151.357666015625
+            "X": 489.732727050781,
+            "Y": 514.517944335938,
+            "Width": 277.117065429688,
+            "Height": 136.169586181641
           },
           "Algorithm": "HSV",
           "HSV": {
-            "HMin": 16,
-            "HMax": 23,
+            "HMin": 0,
+            "HMax": 36,
             "SMin": 0,
             "SMax": 255,
-            "ScoreMin": 5000.0,
-            "ScoreMax": 8000.0
+            "ScoreMin": 8000.0,
+            "ScoreMax": 13000.0
           }
         },
         {
@@ -120,11 +120,11 @@
           "Algorithm": "HSV",
           "HSV": {
             "HMin": 0,
-            "HMax": 102,
+            "HMax": 82,
             "SMin": 0,
             "SMax": 255,
-            "ScoreMin": 10000.0,
-            "ScoreMax": 14000.0
+            "ScoreMin": 6000.0,
+            "ScoreMax": 10000.0
           }
         },
         {
@@ -153,13 +153,13 @@
           "ID": 7,
           "ROI": {
             "X": 2085.89794921875,
-            "Y": 435.15328979492188,
-            "Width": 212.84671020507813,
-            "Height": 179.73722839355469
+            "Y": 435.153289794922,
+            "Width": 212.846710205078,
+            "Height": 179.737228393555
           },
           "Algorithm": "HSV",
           "HSV": {
-            "HMin": 0,
+            "HMin": 49,
             "HMax": 80,
             "SMin": 0,
             "SMax": 255,
@@ -199,8 +199,8 @@
           },
           "Algorithm": "HSV",
           "HSV": {
-            "HMin": 0,
-            "HMax": 83,
+            "HMin": 41,
+            "HMax": 76,
             "SMin": 0,
             "SMax": 255,
             "ScoreMin": 4000.0,
