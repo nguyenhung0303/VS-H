@@ -34,13 +34,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="halcondotnet">
-      <HintPath>..\..\..\..\..\..\..\Program Files\MVTec\HALCON-18.11-Progress\bin\dotnet35\halcondotnet.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files\MVTec\HALCON-18.11-Progress\bin\dotnet35\halcondotnet.dll</HintPath>
     </Reference>
     <Reference Include="MvCameraControl.Net">
-      <HintPath>..\..\..\..\..\Downloads\MvCameraControl.Net.dll</HintPath>
+      <HintPath>..\..\..\..\Downloads\MvCameraControl.Net.dll</HintPath>
     </Reference>
     <Reference Include="MVSDK">
-      <HintPath>..\..\..\..\..\Downloads\MVSDK.dll</HintPath>
+      <HintPath>..\..\..\..\Downloads\MVSDK.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>

@@ -473,7 +473,8 @@ namespace vs_h
             {
                 // Lấy SN (bạn đang append nhiều dòng "CameraSN: decoded")
                 // Tạm thời lấy dòng cuối cùng:
-                string Sn = txtSnRUN.Lines.LastOrDefault()?.Trim();
+                string Sn = (txtSnRUN.Lines.LastOrDefault() ?? "").Trim();
+                if (Sn.Length > 13) Sn = Sn.Substring(0, 13);
                 if (!string.IsNullOrWhiteSpace(Sn))
                 {
                     string msg = Sn + new string(' ', 13) + "CHECK_CCD+++\r\n";
@@ -645,7 +646,10 @@ namespace vs_h
                                                 _currentQrSerialNumber = decoded;
 
                                             //SetTxtSnRUN($"{pov.CameraSN}: {decoded}", append: true);
-                                            SetTxtSnRUN($"{decoded}", append: true);
+                                            string sn13 = (decoded ?? "").Trim();
+                                            if (sn13.Length > 13) sn13 = sn13.Substring(0, 13);
+
+                                            SetTxtSnRUN(sn13, append: true);
                                         }
                                         else
                                         {
