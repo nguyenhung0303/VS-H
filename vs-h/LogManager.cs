@@ -16,8 +16,7 @@ namespace vs_h
 
         public LogManager(string baseLogPath = null)
         {
-            // Nếu không truyền path, mặc định là thư mục LOG trong StartupPath
-            _baseLogPath = baseLogPath ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LOG");
+            _baseLogPath = baseLogPath ?? @"D:\LOG_VS-H\LOG_IMG";
         }
 
         /// <summary>

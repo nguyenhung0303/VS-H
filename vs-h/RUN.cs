@@ -25,6 +25,30 @@ namespace vs_h
             public PictureBox Pb { get; set; }
         }
 
+        private readonly object _fileLogLock = new object();
+        private string _logDir;
+
+        private string GetTodayLogPath()
+        {
+            string date = DateTime.Now.ToString("yyyyMMdd");
+            return Path.Combine(_logDir, $"{date}.txt");
+        }
+
+        private void AppendLogToFile(string line)
+        {
+            try
+            {
+                lock (_fileLogLock)
+                {
+                    File.AppendAllText(GetTodayLogPath(), line + Environment.NewLine, Encoding.UTF8);
+                }
+            }
+            catch
+            {
+                // tránh crash nếu lỗi ghi file
+            }
+        }
+
         private SerialPort _sp;
         private readonly StringBuilder _rxBuf = new StringBuilder();
 
@@ -87,12 +111,19 @@ namespace vs_h
         }
         private void AppendLog(string text)
         {
+            string line = $"{DateTime.Now:HH:mm:ss.fff} {text}";
+
+            // ghi file trước (không phụ thuộc UI thread)
+            AppendLogToFile(line);
+
+            // hiển thị lên UI
             if (richTextBox1.InvokeRequired)
             {
                 richTextBox1.BeginInvoke(new Action(() => AppendLog(text)));
                 return;
             }
-            richTextBox1.AppendText($"{DateTime.Now:HH:mm:ss.fff} {text}\r\n");
+
+            richTextBox1.AppendText(line + "\r\n");
             richTextBox1.ScrollToCaret();
         }
         private void ApplyExposureForSn(CamInfo ci)
@@ -175,6 +206,9 @@ namespace vs_h
 
         private async void RUN_Load(object sender, EventArgs e)
         {
+            _logDir = @"D:\LOG_VS-H\LOG_txt";
+            Directory.CreateDirectory(_logDir);
+
             try
             {
                 var devs = MindVisionCamera.GetDeviceList();
@@ -324,13 +358,13 @@ namespace vs_h
             AppendLog("[TX] " + msg.Replace("\r", "\\r").Replace("\n", "\\n"));
 
             // chờ tối đa 5s
-            var done = await Task.WhenAny(tcs.Task, Task.Delay(5000));
+            var done = await Task.WhenAny(tcs.Task, Task.Delay(1000));
 
             if (done != tcs.Task)
             {
                 // timeout => SFC
                 SetResultUI("SFC", Color.OrangeRed, Color.White);
-                AppendLog("[TIMEOUT] No response in 5s -> SFC");
+                AppendLog("-----> SFC");
                 return;
             }
 
@@ -519,6 +553,7 @@ namespace vs_h
 
                 await SendAndWaitResultAsync(Sn);   // ✅ gửi đúng SN đã cắt
             }
+            AppendLog("-------------------done-------------------");
         }
 
 
