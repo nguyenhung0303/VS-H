@@ -141,6 +141,7 @@ namespace vs_h
             public Rectangle Rect;
             public bool Pass;
             public string Text;
+            public string Algorithm;
         }
 
         private Bitmap DrawRoisOnBitmap(Bitmap src, List<RoiDraw> rois)
@@ -531,6 +532,8 @@ namespace vs_h
                     Bitmap annotated = DrawRoisOnBitmap(baseBmp, rois);
                     baseBmp.Dispose(); // dispose bản base vì đã có annotated
                     SetPictureBoxImageSafe(info.Pb, annotated);
+
+
                 }
                 else
                 {
@@ -554,6 +557,43 @@ namespace vs_h
                 await SendAndWaitResultAsync(Sn);   // ✅ gửi đúng SN đã cắt
             }
             AppendLog("-------------------done-------------------");
+            if (!string.IsNullOrWhiteSpace(_currentQrSerialNumber))
+            {
+                foreach (var info in _camInfos)
+                {
+                    Bitmap shot = GetPictureBoxBitmapCloneSafe(info.Pb);
+                    if (shot == null) continue;
+
+                    try
+                    {
+                        List<RoiDraw> rois = null; // ✅ luôn có giá trị (null) từ đầu
+
+                        if (drawMap != null)
+                            drawMap.TryGetValue(info.SN, out rois);
+
+                        bool hasHsv = HasHsvRoi(rois);
+                        bool hasQr = HasQrRoi(rois);
+
+                        bool isPassCam = true;
+                        if (rois != null && rois.Count > 0)
+                            isPassCam = rois.All(r => r.Pass);
+
+                        // ✅ 1) Có HSV thì lưu OK/NG
+                        if (hasHsv)
+                            _logManager.SaveImage(shot, _currentQrSerialNumber, info.SN, isPassCam, "RUN");
+
+                        // ✅ 2) Có QR thì lưu vào folder QR
+                        if (hasQr)
+                            _logManager.SaveQrImage(shot, _currentQrSerialNumber, info.SN, "RUN");
+                    }
+                    finally
+                    {
+                        shot.Dispose();
+                    }
+                }
+            }
+
+
         }
 
 
@@ -565,7 +605,7 @@ namespace vs_h
             _currentQrSerialNumber = null;
 
             // Dictionary để lưu ảnh HSV cần log: Key = CameraSN, Value = (Bitmap, isPass, povName)
-            var hsvImagesToLog = new Dictionary<string, List<(Bitmap Image, bool IsPass, string PovName)>>(StringComparer.OrdinalIgnoreCase);
+            //var hsvImagesToLog = new Dictionary<string, List<(Bitmap Image, bool IsPass, string PovName)>>(StringComparer.OrdinalIgnoreCase);
 
             try
             {
@@ -604,6 +644,7 @@ namespace vs_h
                                 drawMap[pov.CameraSN] = new List<RoiDraw>();
 
                             using (var img = new HalconDotNet.HImage(imgPath))
+
                             {
                                 // Biến để track xem POV này có HSV test nào không
                                 bool hasHsvTest = false;
@@ -665,7 +706,8 @@ namespace vs_h
                                         {
                                             Rect = ToRect(smd.ROI),
                                             Pass = isPass,
-                                            Text = $"HSV:{score:0}"
+                                            Text = $"HSV:{score:0}",
+                                            Algorithm = "HSV"
                                         });
 
                                         continue;
@@ -703,7 +745,8 @@ namespace vs_h
                                         {
                                             Rect = ToRect(smd.ROI),
                                             Pass = ok,
-                                            Text = ok ? $"QR:{decoded}" : "QR:FAIL"
+                                            Text = ok ? $"QR:{decoded}" : "QR:FAIL",
+                                            Algorithm = "QR"
                                         });
 
                                         continue;
@@ -716,26 +759,26 @@ namespace vs_h
 
                                 // Sau khi xử lý hết các SMD của POV này
                                 // Nếu có HSV test, lưu ảnh vào danh sách để log
-                                if (hasHsvTest)
-                                {
-                                    try
-                                    {
-                                        // Load lại ảnh từ file để lưu
-                                        using (var bmpToLog = new Bitmap(imgPath))
-                                        {
-                                            Bitmap clonedBmp = (Bitmap)bmpToLog.Clone();
+                                //if (hasHsvTest)
+                                //{
+                                //    try
+                                //    {
+                                //        // Load lại ảnh từ file để lưu
+                                //        using (var bmpToLog = new Bitmap(imgPath))
+                                //        {
+                                //            Bitmap clonedBmp = (Bitmap)bmpToLog.Clone();
 
-                                            if (!hsvImagesToLog.ContainsKey(pov.CameraSN))
-                                                hsvImagesToLog[pov.CameraSN] = new List<(Bitmap, bool, string)>();
+                                //            if (!hsvImagesToLog.ContainsKey(pov.CameraSN))
+                                //                hsvImagesToLog[pov.CameraSN] = new List<(Bitmap, bool, string)>();
 
-                                            hsvImagesToLog[pov.CameraSN].Add((clonedBmp, povAllHsvPass, pov.Name));
-                                        }
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        details.AppendLine($"[WARNING] Không thể load ảnh để log: {ex.Message}");
-                                    }
-                                }
+                                //            hsvImagesToLog[pov.CameraSN].Add((clonedBmp, povAllHsvPass, pov.Name));
+                                //        }
+                                //    }
+                                //    catch (Exception ex)
+                                //    {
+                                //        details.AppendLine($"[WARNING] Không thể load ảnh để log: {ex.Message}");
+                                //    }
+                                //}
                             }
                         }
                     }
@@ -748,52 +791,52 @@ namespace vs_h
                 UpdateRunResultTextbox(total, fail, pass);
 
                 // Lưu ảnh HSV vào LOG sau khi đã có QR serial number
-                if (!string.IsNullOrWhiteSpace(_currentQrSerialNumber) && hsvImagesToLog.Count > 0)
-                {
-                    foreach (var kvp in hsvImagesToLog)
-                    {
-                        string cameraSN = kvp.Key;
-                        foreach (var imgInfo in kvp.Value)
-                        {
-                            try
-                            {
-                                string savedPath = _logManager.SaveImage(
-                                    imgInfo.Image,
-                                    _currentQrSerialNumber,
-                                    cameraSN,
-                                    imgInfo.IsPass,
-                                    imgInfo.PovName
-                                );
+                //if (!string.IsNullOrWhiteSpace(_currentQrSerialNumber) && hsvImagesToLog.Count > 0)
+                //{
+                //    foreach (var kvp in hsvImagesToLog)
+                //    {
+                //        string cameraSN = kvp.Key;
+                //        foreach (var imgInfo in kvp.Value)
+                //        {
+                //            try
+                //            {
+                //                string savedPath = _logManager.SaveImage(
+                //                    imgInfo.Image,
+                //                    _currentQrSerialNumber,
+                //                    cameraSN,
+                //                    imgInfo.IsPass,
+                //                    imgInfo.PovName
+                //                );
 
-                                if (!string.IsNullOrWhiteSpace(savedPath))
-                                {
-                                    details.AppendLine($"[LOG] Saved: {Path.GetFileName(savedPath)}");
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                details.AppendLine($"[LOG ERROR] {ex.Message}");
-                            }
-                            finally
-                            {
-                                // Dispose bitmap sau khi lưu
-                                imgInfo.Image?.Dispose();
-                            }
-                        }
-                    }
-                }
-                else if (hsvImagesToLog.Count > 0)
-                {
-                    // Nếu không có QR code, dispose tất cả bitmap
-                    foreach (var kvp in hsvImagesToLog)
-                    {
-                        foreach (var imgInfo in kvp.Value)
-                        {
-                            imgInfo.Image?.Dispose();
-                        }
-                    }
-                    details.AppendLine("[WARNING] Không lưu LOG vì không đọc được QR code");
-                }
+                //                if (!string.IsNullOrWhiteSpace(savedPath))
+                //                {
+                //                    details.AppendLine($"[LOG] Saved: {Path.GetFileName(savedPath)}");
+                //                }
+                //            }
+                //            catch (Exception ex)
+                //            {
+                //                details.AppendLine($"[LOG ERROR] {ex.Message}");
+                //            }
+                //            finally
+                //            {
+                //                // Dispose bitmap sau khi lưu
+                //                imgInfo.Image?.Dispose();
+                //            }
+                //        }
+                //    }
+                //}
+                //else if (hsvImagesToLog.Count > 0)
+                //{
+                //    // Nếu không có QR code, dispose tất cả bitmap
+                //    foreach (var kvp in hsvImagesToLog)
+                //    {
+                //        foreach (var imgInfo in kvp.Value)
+                //        {
+                //            imgInfo.Image?.Dispose();
+                //        }
+                //    }
+                //    details.AppendLine("[WARNING] Không lưu LOG vì không đọc được QR code");
+                //}
 
                 return drawMap;
             }
@@ -802,20 +845,25 @@ namespace vs_h
                 MessageBox.Show("Lỗi khi kiểm tra: " + ex.Message);
 
                 // Cleanup nếu có lỗi
-                if (hsvImagesToLog != null)
-                {
-                    foreach (var kvp in hsvImagesToLog)
-                    {
-                        foreach (var imgInfo in kvp.Value)
-                        {
-                            imgInfo.Image?.Dispose();
-                        }
-                    }
-                }
+                //if (hsvImagesToLog != null)
+                //{
+                //    foreach (var kvp in hsvImagesToLog)
+                //    {
+                //        foreach (var imgInfo in kvp.Value)
+                //        {
+                //            imgInfo.Image?.Dispose();
+                //        }
+                //    }
+                //}
 
                 return drawMap;
             }
         }
+        private bool HasHsvRoi(List<RoiDraw> rois) =>
+    rois != null && rois.Any(r => string.Equals(r.Algorithm, "HSV", StringComparison.OrdinalIgnoreCase));
+
+        private bool HasQrRoi(List<RoiDraw> rois) =>
+            rois != null && rois.Any(r => string.Equals(r.Algorithm, "QR", StringComparison.OrdinalIgnoreCase));
 
         private void ShowLogStatistics()
         {
@@ -974,7 +1022,19 @@ namespace vs_h
 
         }
 
-        //MOdel LOG 
+        //LOG IMG
+        private Bitmap GetPictureBoxBitmapCloneSafe(PictureBox pb)
+        {
+            if (pb == null) return null;
+
+            if (pb.InvokeRequired)
+                return (Bitmap)pb.Invoke(new Func<Bitmap>(() => GetPictureBoxBitmapCloneSafe(pb)));
+
+            var bmp = pb.Image as Bitmap;
+            if (bmp == null) return null;
+
+            return (Bitmap)bmp.Clone(); // ✅ clone để lưu
+        }
 
     }
 }

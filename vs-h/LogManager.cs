@@ -195,5 +195,38 @@ namespace vs_h
             string resultFolder = isPass ? "OK" : "NG";
             return Path.Combine(_baseLogPath, dateFolder, resultFolder);
         }
+        public string SaveQrImage(Bitmap image, string qrSerialNumber, string cameraSN, string povName = null)
+        {
+            if (image == null) return null;
+            if (string.IsNullOrWhiteSpace(qrSerialNumber)) return null;
+
+            try
+            {
+                string dateFolder = DateTime.Now.ToString("yyyyMMdd");
+                string fullPath = Path.Combine(_baseLogPath, dateFolder, "QR"); // ✅ QR cùng cấp OK/NG
+                Directory.CreateDirectory(fullPath);
+
+                string timestamp = DateTime.Now.ToString("HHmmss_fff");
+
+                // (tuỳ chọn) cắt phần sau dấu '-' cho gọn tên file
+                string qrName = qrSerialNumber.Trim();
+                int dash = qrName.IndexOf('-');
+                if (dash >= 0) qrName = qrName.Substring(0, dash);
+
+                string fileName = $"{SanitizeFileName(qrName)}";
+                if (!string.IsNullOrWhiteSpace(cameraSN)) fileName += $"_{SanitizeFileName(cameraSN)}";
+                if (!string.IsNullOrWhiteSpace(povName)) fileName += $"_{SanitizeFileName(povName)}";
+                fileName += $"_{timestamp}.png";
+
+                string filePath = Path.Combine(fullPath, fileName);
+                image.Save(filePath, System.Drawing.Imaging.ImageFormat.Png);
+                return filePath;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
     }
 }
