@@ -2,14 +2,15 @@
 using System;
 using System.Windows.Forms;
 using static vs_h.model;
+using Sunny.UI;
 
 namespace vs_h
 {
     public class SmdManager
     {
-        private readonly TreeView _treeView;
+        private readonly UITreeView _treeView;
 
-        public SmdManager(TreeView treeView)
+        public SmdManager(UITreeView treeView)
         {
             _treeView = treeView;
         }

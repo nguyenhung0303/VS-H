@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using static vs_h.model;
+using Sunny.UI;
 
 namespace vs_h
 {
@@ -160,7 +161,7 @@ namespace vs_h
             // ✅ GÁN MENU ROI CHO PICTUREBOX
             pictureBox1.ContextMenuStrip = contextMenuStrip1;
 
-            LoadCameraListToCombo();
+            //LoadCameraListToCombo();
 
             ModelLoader loader = new ModelLoader(treeView1);
             loader.LoadAllModelsToTreeView();
@@ -301,7 +302,7 @@ namespace vs_h
                 {
                     if (!File.Exists(path))
                     {
-                        MessageBox.Show("Không tìm thấy file ảnh.", "Lỗi");
+                        
                         return;
                     }
 
@@ -1018,14 +1019,19 @@ namespace vs_h
             if (isPass)
             {
                 txtFinalResult.Text = "PASS";
-                txtFinalResult.BackColor = Color.LimeGreen;
-                txtFinalResult.ForeColor = Color.Black;
+
+                // Sunny.UI UITextBox
+                txtFinalResult.FillColor = Color.LimeGreen;   // nền
+                txtFinalResult.ForeColor = Color.Black;       // chữ
+                txtFinalResult.RectColor = Color.LimeGreen;   // viền (tuỳ chọn)
             }
             else
             {
                 txtFinalResult.Text = "FAIL";
-                txtFinalResult.BackColor = Color.Red;
+
+                txtFinalResult.FillColor = Color.Red;
                 txtFinalResult.ForeColor = Color.White;
+                txtFinalResult.RectColor = Color.Red;
             }
         }
 
@@ -1072,21 +1078,7 @@ namespace vs_h
             
         }
 
-        private void UpdateCamButtonUi(bool connected, string sn)
-        {
-            if (connected)
-            {
-                btnCamera.Text = $"Connected: {sn}";
-                btnCamera.BackColor = Color.LimeGreen;
-                btnCamera.ForeColor = Color.Black;
-            }
-            else
-            {
-                btnCamera.Text = "Connect Camera";
-                btnCamera.BackColor = SystemColors.Control;
-                btnCamera.ForeColor = Color.Black;
-            }
-        }
+    
         private void cbListCamera_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_cam.IsConnected)
@@ -1207,5 +1199,6 @@ namespace vs_h
             _cam.SetExposureTime(pov.ExposureTime);
         }
 
+     
     }
 }

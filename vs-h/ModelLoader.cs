@@ -4,15 +4,16 @@ using System.IO;
 using Newtonsoft.Json;
 using System;
 using static vs_h.model;
+using Sunny.UI;
 
 namespace vs_h
 {
     public class ModelLoader
     {
-        private TreeView _treeView;
+        private UITreeView _treeView;
         private string _modelsFolderPath;
 
-        public ModelLoader(TreeView treeView)
+        public ModelLoader(UITreeView treeView)
         {
             _treeView = treeView;
             string projectRoot = Path.Combine(Application.StartupPath, @"..\..");

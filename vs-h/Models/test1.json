@@ -4,7 +4,7 @@
     {
       "Name": "POV1",
       "ExposureTime": 170000.0,
-      "IsEnabled": true,
+      "IsEnabled": false,
       "ImagePath": "C:\\Users\\Administrator\\source\\repos\\nguyenhung0303\\VS-H\\vs-h\\bin\\Debug\\Captured\\snap_20251222_142456_946.png",
       "SMDs": [
         {
@@ -208,7 +208,7 @@
           }
         }
       ],
-      "CameraSN": "024131223062"
+      "CameraSN": ""
     },
     {
       "Name": "POV2",

@@ -3,6 +3,8 @@ using System;
 using System.Globalization;
 using System.Windows.Forms;
 using static vs_h.model;
+using Sunny.UI;
+
 
 namespace vs_h
 {
@@ -11,9 +13,9 @@ namespace vs_h
         private readonly TextBox _txtName;
         private readonly TextBox _txtExposureTime;
         private readonly CheckBox _checkBoxIsEnabled;
-        private readonly TreeView _treeView; // Cần thiết cho Add POV
+        private readonly UITreeView _treeView; // Cần thiết cho Add POV
 
-        public PovManager(TextBox nameControl, TextBox exposureControl, CheckBox enabledControl, TreeView treeView)
+        public PovManager(TextBox nameControl, TextBox exposureControl, CheckBox enabledControl, UITreeView treeView)
         {
             _txtName = nameControl;
             _txtExposureTime = exposureControl;
