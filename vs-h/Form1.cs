@@ -16,7 +16,7 @@ using Sunny.UI;
 
 namespace vs_h
 {
-    public partial class Form1 : Form
+    public partial class Form1 : UIForm
     {
         // =========================================================
         // KHAI BÁO CONTROLS VÀ MANAGERS
@@ -46,8 +46,6 @@ namespace vs_h
         public Form1()
         {
             InitializeComponent();
-
-           
 
             // 1. KHỞI TẠO SMDEditControl
             smdEditor = new SmdEditControl();
@@ -161,42 +159,7 @@ namespace vs_h
             return bmp;
         }
 
-        // Method paint node
-        //private void PaintNodeResult(TreeNode node, string result)
-        //{
-        //    switch (result)
-        //    {
-        //        case "PASS":
-        //            node.ImageKey = "PASS";
-        //            node.SelectedImageKey = "PASS";
-        //            break;
-        //        case "FAIL":
-        //            node.ImageKey = "FAIL";
-        //            node.SelectedImageKey = "FAIL";
-        //            break;
-        //        default: // SKIP
-        //            node.ImageKey = "SKIP";
-        //            node.SelectedImageKey = "SKIP";
-        //            break;
-        //    }
-        //}
-        private void InitPictureBoxZoom()
-        {
-            // panel chứa pictureBox1 (đổi tên đúng theo bạn)
-            // Nếu bạn đã đặt tên panel là panelImage trong designer:
-            _panelImage = panelImage;
-
-            _panelImage.AutoScroll = true;
-            pictureBox1.SizeMode = PictureBoxSizeMode.Normal;
-
-            // bắt sự kiện lăn chuột
-            pictureBox1.MouseWheel += PictureBox1_MouseWheel;
-            _panelImage.MouseWheel += PictureBox1_MouseWheel;
-
-            // để nhận MouseWheel phải focus được
-            pictureBox1.MouseEnter += (s, e) => pictureBox1.Focus();
-            _panelImage.MouseEnter += (s, e) => _panelImage.Focus();
-        }
+  
         private void Form1_Load(object sender, EventArgs e)
         {
             InitializeTreeView();
@@ -206,7 +169,7 @@ namespace vs_h
             // ✅ GÁN MENU ROI CHO PICTUREBOX
             pictureBox1.ContextMenuStrip = contextMenuStrip1;
 
-            LoadCameraListToCombo();
+            //LoadCameraListToCombo();
 
             ModelLoader loader = new ModelLoader(treeView1);
             loader.LoadAllModelsToTreeView();
@@ -1252,6 +1215,12 @@ namespace vs_h
             _cam.SetExposureTime(pov.ExposureTime);
         }
 
-     
+        private void logServerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var f = new LogServer();
+            f.StartPosition = FormStartPosition.CenterParent; // hoặc CenterScreen
+            f.Show(this); // mở không khóa form chính
+                          
+        }
     }
 }

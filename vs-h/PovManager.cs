@@ -5,7 +5,6 @@ using System.Windows.Forms;
 using static vs_h.model;
 using Sunny.UI;
 
-
 namespace vs_h
 {
     public class PovManager

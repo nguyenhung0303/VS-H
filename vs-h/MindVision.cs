@@ -428,6 +428,8 @@ namespace Cong1
                     MvApi.CameraReleaseImageBuffer(m_hCamera, pRaw);
                 }
             }
+
+
         }
         public static List<(string SN, string Friendly, string Product)> GetDeviceList()
         {

@@ -127,10 +127,7 @@ namespace vs_h
                 MessageBox.Show("Thuật toán này chưa có Setting");
             }
 
-          
-
         }
-
       
     }
 }

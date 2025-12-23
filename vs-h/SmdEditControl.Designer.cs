@@ -48,7 +48,7 @@
             // 
             this.chkSMD_IsEnabled.AutoSize = true;
             this.chkSMD_IsEnabled.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkSMD_IsEnabled.Location = new System.Drawing.Point(121, 119);
+            this.chkSMD_IsEnabled.Location = new System.Drawing.Point(92, 119);
             this.chkSMD_IsEnabled.Name = "chkSMD_IsEnabled";
             this.chkSMD_IsEnabled.Size = new System.Drawing.Size(123, 28);
             this.chkSMD_IsEnabled.TabIndex = 2;
@@ -59,7 +59,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(25, 85);
+            this.label1.Location = new System.Drawing.Point(8, 80);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(27, 24);
             this.label1.TabIndex = 3;
@@ -68,7 +68,7 @@
             // txtSMD_ID
             // 
             this.txtSMD_ID.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSMD_ID.Location = new System.Drawing.Point(121, 72);
+            this.txtSMD_ID.Location = new System.Drawing.Point(92, 72);
             this.txtSMD_ID.Multiline = true;
             this.txtSMD_ID.Name = "txtSMD_ID";
             this.txtSMD_ID.Size = new System.Drawing.Size(138, 37);
@@ -78,7 +78,7 @@
             // txtROI_Y
             // 
             this.txtROI_Y.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtROI_Y.Location = new System.Drawing.Point(204, 160);
+            this.txtROI_Y.Location = new System.Drawing.Point(175, 160);
             this.txtROI_Y.Multiline = true;
             this.txtROI_Y.Name = "txtROI_Y";
             this.txtROI_Y.Size = new System.Drawing.Size(55, 25);
@@ -87,7 +87,7 @@
             // txtROI_Width
             // 
             this.txtROI_Width.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtROI_Width.Location = new System.Drawing.Point(121, 200);
+            this.txtROI_Width.Location = new System.Drawing.Point(92, 200);
             this.txtROI_Width.Multiline = true;
             this.txtROI_Width.Name = "txtROI_Width";
             this.txtROI_Width.Size = new System.Drawing.Size(55, 30);
@@ -96,7 +96,7 @@
             // txtROI_X
             // 
             this.txtROI_X.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtROI_X.Location = new System.Drawing.Point(121, 160);
+            this.txtROI_X.Location = new System.Drawing.Point(92, 160);
             this.txtROI_X.Multiline = true;
             this.txtROI_X.Name = "txtROI_X";
             this.txtROI_X.Size = new System.Drawing.Size(55, 25);
@@ -105,7 +105,7 @@
             // txtROI_Height
             // 
             this.txtROI_Height.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtROI_Height.Location = new System.Drawing.Point(204, 200);
+            this.txtROI_Height.Location = new System.Drawing.Point(175, 200);
             this.txtROI_Height.Multiline = true;
             this.txtROI_Height.Name = "txtROI_Height";
             this.txtROI_Height.Size = new System.Drawing.Size(55, 30);
@@ -115,7 +115,7 @@
             // 
             this.lb2.AutoSize = true;
             this.lb2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lb2.Location = new System.Drawing.Point(25, 42);
+            this.lb2.Location = new System.Drawing.Point(8, 37);
             this.lb2.Name = "lb2";
             this.lb2.Size = new System.Drawing.Size(61, 24);
             this.lb2.TabIndex = 10;
@@ -125,7 +125,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(24, 255);
+            this.label3.Location = new System.Drawing.Point(3, 255);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(90, 24);
             this.label3.TabIndex = 11;
@@ -135,7 +135,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(25, 123);
+            this.label4.Location = new System.Drawing.Point(8, 118);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(70, 24);
             this.label4.TabIndex = 12;
@@ -144,7 +144,7 @@
             // txtSMD_Name
             // 
             this.txtSMD_Name.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSMD_Name.Location = new System.Drawing.Point(121, 30);
+            this.txtSMD_Name.Location = new System.Drawing.Point(92, 30);
             this.txtSMD_Name.Multiline = true;
             this.txtSMD_Name.Name = "txtSMD_Name";
             this.txtSMD_Name.Size = new System.Drawing.Size(138, 36);
@@ -160,7 +160,7 @@
             "HSV",
             "QR"});
             this.cmbSMD_Algorithm.ItemSelectForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(243)))), ((int)(((byte)(255)))));
-            this.cmbSMD_Algorithm.Location = new System.Drawing.Point(121, 250);
+            this.cmbSMD_Algorithm.Location = new System.Drawing.Point(92, 250);
             this.cmbSMD_Algorithm.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cmbSMD_Algorithm.MinimumSize = new System.Drawing.Size(63, 0);
             this.cmbSMD_Algorithm.Name = "cmbSMD_Algorithm";
@@ -176,7 +176,7 @@
             // 
             this.btnSettingAG.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnSettingAG.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.btnSettingAG.Location = new System.Drawing.Point(121, 300);
+            this.btnSettingAG.Location = new System.Drawing.Point(92, 300);
             this.btnSettingAG.MinimumSize = new System.Drawing.Size(1, 1);
             this.btnSettingAG.Name = "btnSettingAG";
             this.btnSettingAG.Size = new System.Drawing.Size(100, 35);
@@ -189,7 +189,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(25, 161);
+            this.label2.Location = new System.Drawing.Point(8, 156);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(38, 24);
             this.label2.TabIndex = 17;
@@ -215,7 +215,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.chkSMD_IsEnabled);
             this.Name = "SmdEditControl";
-            this.Size = new System.Drawing.Size(364, 495);
+            this.Size = new System.Drawing.Size(318, 394);
             this.ResumeLayout(false);
             this.PerformLayout();
 

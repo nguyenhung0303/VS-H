@@ -36,6 +36,7 @@
             this.newModelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openModelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.runToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.logServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2 = new System.Windows.Forms.Panel();
             this.btnSave = new Sunny.UI.UIButton();
             this.btnPicture = new Sunny.UI.UIButton();
@@ -80,18 +81,20 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.LightBlue;
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel1.Controls.Add(this.txtFinalResult);
             this.panel1.Controls.Add(this.menuStrip1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Location = new System.Drawing.Point(0, 35);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(256, 881);
+            this.panel1.Size = new System.Drawing.Size(256, 846);
             this.panel1.TabIndex = 0;
             // 
             // txtFinalResult
             // 
             this.txtFinalResult.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtFinalResult.Dock = System.Windows.Forms.DockStyle.Top;
+            this.txtFinalResult.Enabled = false;
             this.txtFinalResult.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtFinalResult.Location = new System.Drawing.Point(0, 33);
             this.txtFinalResult.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -99,7 +102,7 @@
             this.txtFinalResult.Name = "txtFinalResult";
             this.txtFinalResult.Padding = new System.Windows.Forms.Padding(5);
             this.txtFinalResult.ShowText = false;
-            this.txtFinalResult.Size = new System.Drawing.Size(256, 109);
+            this.txtFinalResult.Size = new System.Drawing.Size(252, 109);
             this.txtFinalResult.TabIndex = 2;
             this.txtFinalResult.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
             this.txtFinalResult.Watermark = "";
@@ -109,10 +112,11 @@
             this.menuStrip1.BackColor = System.Drawing.Color.Cyan;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.runToolStripMenuItem});
+            this.runToolStripMenuItem,
+            this.logServerToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(256, 33);
+            this.menuStrip1.Size = new System.Drawing.Size(252, 33);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -148,16 +152,25 @@
             this.runToolStripMenuItem.Text = "Run";
             this.runToolStripMenuItem.Click += new System.EventHandler(this.runToolStripMenuItem_Click);
             // 
+            // logServerToolStripMenuItem
+            // 
+            this.logServerToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.logServerToolStripMenuItem.Name = "logServerToolStripMenuItem";
+            this.logServerToolStripMenuItem.Size = new System.Drawing.Size(113, 29);
+            this.logServerToolStripMenuItem.Text = "Log Server";
+            this.logServerToolStripMenuItem.Click += new System.EventHandler(this.logServerToolStripMenuItem_Click);
+            // 
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.SteelBlue;
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel2.Controls.Add(this.btnSave);
             this.panel2.Controls.Add(this.btnPicture);
             this.panel2.Controls.Add(this.btnTestAllSmd);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(578, 122);
+            this.panel2.Size = new System.Drawing.Size(578, 87);
             this.panel2.TabIndex = 1;
             // 
             // btnSave
@@ -206,7 +219,7 @@
             this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(578, 759);
+            this.pictureBox1.Size = new System.Drawing.Size(574, 755);
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUp);
@@ -250,12 +263,13 @@
             // 
             // panel3
             // 
+            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel3.Controls.Add(this.treeView1);
             this.panel3.Controls.Add(this.panelControl);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel3.Location = new System.Drawing.Point(834, 0);
+            this.panel3.Location = new System.Drawing.Point(834, 35);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(340, 881);
+            this.panel3.Size = new System.Drawing.Size(340, 846);
             this.panel3.TabIndex = 2;
             // 
             // treeView1
@@ -270,7 +284,7 @@
             this.treeView1.Name = "treeView1";
             this.treeView1.ScrollBarStyleInherited = false;
             this.treeView1.ShowText = false;
-            this.treeView1.Size = new System.Drawing.Size(340, 495);
+            this.treeView1.Size = new System.Drawing.Size(336, 384);
             this.treeView1.TabIndex = 2;
             this.treeView1.Text = "uiTreeView1";
             this.treeView1.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
@@ -280,6 +294,7 @@
             // panelControl
             // 
             this.panelControl.BackColor = System.Drawing.Color.LightBlue;
+            this.panelControl.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panelControl.Controls.Add(this.cbListCamera);
             this.panelControl.Controls.Add(this.btnConnectCam);
             this.panelControl.Controls.Add(this.label3);
@@ -289,9 +304,9 @@
             this.panelControl.Controls.Add(this.label2);
             this.panelControl.Controls.Add(this.label1);
             this.panelControl.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelControl.Location = new System.Drawing.Point(0, 495);
+            this.panelControl.Location = new System.Drawing.Point(0, 384);
             this.panelControl.Name = "panelControl";
-            this.panelControl.Size = new System.Drawing.Size(340, 386);
+            this.panelControl.Size = new System.Drawing.Size(336, 458);
             this.panelControl.TabIndex = 1;
             // 
             // cbListCamera
@@ -417,9 +432,10 @@
             // 
             this.panelImage.AutoScroll = true;
             this.panelImage.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.panelImage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panelImage.Controls.Add(this.pictureBox1);
             this.panelImage.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelImage.Location = new System.Drawing.Point(256, 0);
+            this.panelImage.Location = new System.Drawing.Point(256, 35);
             this.panelImage.Name = "panelImage";
             this.panelImage.Size = new System.Drawing.Size(578, 759);
             this.panelImage.TabIndex = 4;
@@ -429,16 +445,14 @@
             this.panel4.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.panel4.Controls.Add(this.panel2);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel4.Location = new System.Drawing.Point(256, 759);
+            this.panel4.Location = new System.Drawing.Point(256, 794);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(578, 122);
+            this.panel4.Size = new System.Drawing.Size(578, 87);
             this.panel4.TabIndex = 5;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.Control;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1174, 881);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panelImage);
@@ -446,8 +460,11 @@
             this.Controls.Add(this.panel1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
+            this.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.Text = "Form1";
+            this.TitleColor = System.Drawing.Color.SkyBlue;
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.ZoomScaleRect = new System.Drawing.Rectangle(15, 15, 1174, 881);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
@@ -506,6 +523,7 @@
         private Sunny.UI.UIButton btnSave;
         private Sunny.UI.UITextBox txtFinalResult;
         private Sunny.UI.UIComboBox cbListCamera;
+        private System.Windows.Forms.ToolStripMenuItem logServerToolStripMenuItem;
     }
 }
 
