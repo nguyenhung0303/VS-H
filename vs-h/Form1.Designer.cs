@@ -30,12 +30,16 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.txtFinalResult = new Sunny.UI.UITextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newModelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openModelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.runToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.btnSave = new Sunny.UI.UIButton();
+            this.btnPicture = new Sunny.UI.UIButton();
+            this.btnTestAllSmd = new Sunny.UI.UIButton();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.drawToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -45,6 +49,7 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.treeView1 = new Sunny.UI.UITreeView();
             this.panelControl = new System.Windows.Forms.Panel();
+            this.cbListCamera = new Sunny.UI.UIComboBox();
             this.btnConnectCam = new Sunny.UI.UIButton();
             this.label3 = new System.Windows.Forms.Label();
             this.checkBoxIsEnabled = new System.Windows.Forms.CheckBox();
@@ -58,11 +63,6 @@
             this.deleteSMDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelImage = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
-            this.btnTestAllSmd = new Sunny.UI.UIButton();
-            this.btnPicture = new Sunny.UI.UIButton();
-            this.btnSave = new Sunny.UI.UIButton();
-            this.txtFinalResult = new Sunny.UI.UITextBox();
-            this.cbListCamera = new Sunny.UI.UIComboBox();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -85,8 +85,24 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(256, 973);
+            this.panel1.Size = new System.Drawing.Size(256, 881);
             this.panel1.TabIndex = 0;
+            // 
+            // txtFinalResult
+            // 
+            this.txtFinalResult.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtFinalResult.Dock = System.Windows.Forms.DockStyle.Top;
+            this.txtFinalResult.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtFinalResult.Location = new System.Drawing.Point(0, 33);
+            this.txtFinalResult.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtFinalResult.MinimumSize = new System.Drawing.Size(1, 16);
+            this.txtFinalResult.Name = "txtFinalResult";
+            this.txtFinalResult.Padding = new System.Windows.Forms.Padding(5);
+            this.txtFinalResult.ShowText = false;
+            this.txtFinalResult.Size = new System.Drawing.Size(256, 109);
+            this.txtFinalResult.TabIndex = 2;
+            this.txtFinalResult.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            this.txtFinalResult.Watermark = "";
             // 
             // menuStrip1
             // 
@@ -113,14 +129,14 @@
             // newModelToolStripMenuItem
             // 
             this.newModelToolStripMenuItem.Name = "newModelToolStripMenuItem";
-            this.newModelToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.newModelToolStripMenuItem.Size = new System.Drawing.Size(189, 30);
             this.newModelToolStripMenuItem.Text = "New Model";
             this.newModelToolStripMenuItem.Click += new System.EventHandler(this.newModelToolStripMenuItem_Click);
             // 
             // openModelToolStripMenuItem
             // 
             this.openModelToolStripMenuItem.Name = "openModelToolStripMenuItem";
-            this.openModelToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.openModelToolStripMenuItem.Size = new System.Drawing.Size(189, 30);
             this.openModelToolStripMenuItem.Text = "Open Model";
             this.openModelToolStripMenuItem.Click += new System.EventHandler(this.openModelToolStripMenuItem_Click);
             // 
@@ -141,8 +157,47 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(578, 103);
+            this.panel2.Size = new System.Drawing.Size(578, 122);
             this.panel2.TabIndex = 1;
+            // 
+            // btnSave
+            // 
+            this.btnSave.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.btnSave.Location = new System.Drawing.Point(6, 15);
+            this.btnSave.MinimumSize = new System.Drawing.Size(1, 1);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(100, 35);
+            this.btnSave.TabIndex = 6;
+            this.btnSave.Text = "Save";
+            this.btnSave.TipsFont = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
+            // btnPicture
+            // 
+            this.btnPicture.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnPicture.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.btnPicture.Location = new System.Drawing.Point(131, 15);
+            this.btnPicture.MinimumSize = new System.Drawing.Size(1, 1);
+            this.btnPicture.Name = "btnPicture";
+            this.btnPicture.Size = new System.Drawing.Size(100, 35);
+            this.btnPicture.TabIndex = 5;
+            this.btnPicture.Text = "Picture";
+            this.btnPicture.TipsFont = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.btnPicture.Click += new System.EventHandler(this.btnPicture_Click);
+            // 
+            // btnTestAllSmd
+            // 
+            this.btnTestAllSmd.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnTestAllSmd.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.btnTestAllSmd.Location = new System.Drawing.Point(254, 15);
+            this.btnTestAllSmd.MinimumSize = new System.Drawing.Size(1, 1);
+            this.btnTestAllSmd.Name = "btnTestAllSmd";
+            this.btnTestAllSmd.Size = new System.Drawing.Size(100, 35);
+            this.btnTestAllSmd.TabIndex = 4;
+            this.btnTestAllSmd.Text = "Test";
+            this.btnTestAllSmd.TipsFont = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.btnTestAllSmd.Click += new System.EventHandler(this.btnTestAllSmd_Click);
             // 
             // pictureBox1
             // 
@@ -151,7 +206,7 @@
             this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(578, 870);
+            this.pictureBox1.Size = new System.Drawing.Size(578, 759);
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUp);
@@ -200,7 +255,7 @@
             this.panel3.Dock = System.Windows.Forms.DockStyle.Right;
             this.panel3.Location = new System.Drawing.Point(834, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(340, 973);
+            this.panel3.Size = new System.Drawing.Size(340, 881);
             this.panel3.TabIndex = 2;
             // 
             // treeView1
@@ -215,7 +270,7 @@
             this.treeView1.Name = "treeView1";
             this.treeView1.ScrollBarStyleInherited = false;
             this.treeView1.ShowText = false;
-            this.treeView1.Size = new System.Drawing.Size(340, 587);
+            this.treeView1.Size = new System.Drawing.Size(340, 495);
             this.treeView1.TabIndex = 2;
             this.treeView1.Text = "uiTreeView1";
             this.treeView1.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
@@ -234,10 +289,29 @@
             this.panelControl.Controls.Add(this.label2);
             this.panelControl.Controls.Add(this.label1);
             this.panelControl.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelControl.Location = new System.Drawing.Point(0, 587);
+            this.panelControl.Location = new System.Drawing.Point(0, 495);
             this.panelControl.Name = "panelControl";
             this.panelControl.Size = new System.Drawing.Size(340, 386);
             this.panelControl.TabIndex = 1;
+            // 
+            // cbListCamera
+            // 
+            this.cbListCamera.DataSource = null;
+            this.cbListCamera.FillColor = System.Drawing.Color.White;
+            this.cbListCamera.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.cbListCamera.ItemHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(200)))), ((int)(((byte)(255)))));
+            this.cbListCamera.ItemSelectForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(243)))), ((int)(((byte)(255)))));
+            this.cbListCamera.Location = new System.Drawing.Point(174, 169);
+            this.cbListCamera.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cbListCamera.MinimumSize = new System.Drawing.Size(63, 0);
+            this.cbListCamera.Name = "cbListCamera";
+            this.cbListCamera.Padding = new System.Windows.Forms.Padding(0, 0, 30, 2);
+            this.cbListCamera.Size = new System.Drawing.Size(150, 29);
+            this.cbListCamera.SymbolSize = 24;
+            this.cbListCamera.TabIndex = 3;
+            this.cbListCamera.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
+            this.cbListCamera.Watermark = "";
+            this.cbListCamera.SelectedIndexChanged += new System.EventHandler(this.cbListCamera_SelectedIndexChanged);
             // 
             // btnConnectCam
             // 
@@ -347,7 +421,7 @@
             this.panelImage.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelImage.Location = new System.Drawing.Point(256, 0);
             this.panelImage.Name = "panelImage";
-            this.panelImage.Size = new System.Drawing.Size(578, 870);
+            this.panelImage.Size = new System.Drawing.Size(578, 759);
             this.panelImage.TabIndex = 4;
             // 
             // panel4
@@ -355,91 +429,17 @@
             this.panel4.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.panel4.Controls.Add(this.panel2);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel4.Location = new System.Drawing.Point(256, 870);
+            this.panel4.Location = new System.Drawing.Point(256, 759);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(578, 103);
+            this.panel4.Size = new System.Drawing.Size(578, 122);
             this.panel4.TabIndex = 5;
-            // 
-            // btnTestAllSmd
-            // 
-            this.btnTestAllSmd.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnTestAllSmd.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.btnTestAllSmd.Location = new System.Drawing.Point(254, 15);
-            this.btnTestAllSmd.MinimumSize = new System.Drawing.Size(1, 1);
-            this.btnTestAllSmd.Name = "btnTestAllSmd";
-            this.btnTestAllSmd.Size = new System.Drawing.Size(100, 35);
-            this.btnTestAllSmd.TabIndex = 4;
-            this.btnTestAllSmd.Text = "Test";
-            this.btnTestAllSmd.TipsFont = new System.Drawing.Font("Microsoft Sans Serif", 9F);
-            this.btnTestAllSmd.Click += new System.EventHandler(this.btnTestAllSmd_Click);
-            // 
-            // btnPicture
-            // 
-            this.btnPicture.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnPicture.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.btnPicture.Location = new System.Drawing.Point(131, 15);
-            this.btnPicture.MinimumSize = new System.Drawing.Size(1, 1);
-            this.btnPicture.Name = "btnPicture";
-            this.btnPicture.Size = new System.Drawing.Size(100, 35);
-            this.btnPicture.TabIndex = 5;
-            this.btnPicture.Text = "Picture";
-            this.btnPicture.TipsFont = new System.Drawing.Font("Microsoft Sans Serif", 9F);
-            this.btnPicture.Click += new System.EventHandler(this.btnPicture_Click);
-            // 
-            // btnSave
-            // 
-            this.btnSave.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.btnSave.Location = new System.Drawing.Point(6, 15);
-            this.btnSave.MinimumSize = new System.Drawing.Size(1, 1);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(100, 35);
-            this.btnSave.TabIndex = 6;
-            this.btnSave.Text = "Save";
-            this.btnSave.TipsFont = new System.Drawing.Font("Microsoft Sans Serif", 9F);
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // txtFinalResult
-            // 
-            this.txtFinalResult.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtFinalResult.Dock = System.Windows.Forms.DockStyle.Top;
-            this.txtFinalResult.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtFinalResult.Location = new System.Drawing.Point(0, 33);
-            this.txtFinalResult.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtFinalResult.MinimumSize = new System.Drawing.Size(1, 16);
-            this.txtFinalResult.Name = "txtFinalResult";
-            this.txtFinalResult.Padding = new System.Windows.Forms.Padding(5);
-            this.txtFinalResult.ShowText = false;
-            this.txtFinalResult.Size = new System.Drawing.Size(256, 109);
-            this.txtFinalResult.TabIndex = 2;
-            this.txtFinalResult.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
-            this.txtFinalResult.Watermark = "";
-            // 
-            // cbListCamera
-            // 
-            this.cbListCamera.DataSource = null;
-            this.cbListCamera.FillColor = System.Drawing.Color.White;
-            this.cbListCamera.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.cbListCamera.ItemHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(200)))), ((int)(((byte)(255)))));
-            this.cbListCamera.ItemSelectForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(243)))), ((int)(((byte)(255)))));
-            this.cbListCamera.Location = new System.Drawing.Point(174, 169);
-            this.cbListCamera.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.cbListCamera.MinimumSize = new System.Drawing.Size(63, 0);
-            this.cbListCamera.Name = "cbListCamera";
-            this.cbListCamera.Padding = new System.Windows.Forms.Padding(0, 0, 30, 2);
-            this.cbListCamera.Size = new System.Drawing.Size(150, 29);
-            this.cbListCamera.SymbolSize = 24;
-            this.cbListCamera.TabIndex = 3;
-            this.cbListCamera.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
-            this.cbListCamera.Watermark = "";
-            this.cbListCamera.SelectedIndexChanged += new System.EventHandler(this.cbListCamera_SelectedIndexChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(1174, 973);
+            this.ClientSize = new System.Drawing.Size(1174, 881);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panelImage);
             this.Controls.Add(this.panel3);

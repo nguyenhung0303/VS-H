@@ -47,7 +47,7 @@ namespace vs_h
         {
             InitializeComponent();
 
-            InitPictureBoxZoom();
+           
 
             // 1. KHỞI TẠO SMDEditControl
             smdEditor = new SmdEditControl();
@@ -135,6 +135,51 @@ namespace vs_h
                 smdEditor.UpdateRoiFieldsFromCurrentSmd();
             };
         }
+        // Khởi tạo ImageList trong Form_Load hoặc Constructor
+        private void InitializeTreeView()
+        {
+            ImageList imageList = new ImageList();
+            imageList.ImageSize = new Size(16, 16);
+
+            // Tạo icon màu cho từng trạng thái
+            imageList.Images.Add("PASS", CreateColorIcon(Color.LightGreen));
+            imageList.Images.Add("FAIL", CreateColorIcon(Color.LightCoral));
+            imageList.Images.Add("SKIP", CreateColorIcon(Color.LightGray));
+
+            treeView1.ImageList = imageList;  // ✅ ĐỔI TỪ uiTreeView1 → treeView1
+        }
+
+        private Image CreateColorIcon(Color color)
+        {
+            Bitmap bmp = new Bitmap(16, 16);
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                g.FillEllipse(new SolidBrush(color), 1, 1, 14, 14);
+                g.DrawEllipse(new Pen(Color.Gray, 1), 1, 1, 14, 14);
+            }
+            return bmp;
+        }
+
+        // Method paint node
+        //private void PaintNodeResult(TreeNode node, string result)
+        //{
+        //    switch (result)
+        //    {
+        //        case "PASS":
+        //            node.ImageKey = "PASS";
+        //            node.SelectedImageKey = "PASS";
+        //            break;
+        //        case "FAIL":
+        //            node.ImageKey = "FAIL";
+        //            node.SelectedImageKey = "FAIL";
+        //            break;
+        //        default: // SKIP
+        //            node.ImageKey = "SKIP";
+        //            node.SelectedImageKey = "SKIP";
+        //            break;
+        //    }
+        //}
         private void InitPictureBoxZoom()
         {
             // panel chứa pictureBox1 (đổi tên đúng theo bạn)
@@ -154,14 +199,14 @@ namespace vs_h
         }
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            InitializeTreeView();
             //treeView1.ContextMenuStrip = contextMenuModel;
             addSMDToolStripMenuItem.Click += addSMDToolStripMenuItem_Click;
 
             // ✅ GÁN MENU ROI CHO PICTUREBOX
             pictureBox1.ContextMenuStrip = contextMenuStrip1;
 
-            //LoadCameraListToCombo();
+            LoadCameraListToCombo();
 
             ModelLoader loader = new ModelLoader(treeView1);
             loader.LoadAllModelsToTreeView();
@@ -1001,18 +1046,26 @@ namespace vs_h
             switch (result)
             {
                 case "PASS":
-                    node.BackColor = System.Drawing.Color.LightGreen;
-                    node.ForeColor = System.Drawing.Color.Black;
+                    node.ImageKey = "PASS";
+                    node.SelectedImageKey = "PASS";
                     break;
                 case "FAIL":
-                    node.BackColor = System.Drawing.Color.LightCoral;
-                    node.ForeColor = System.Drawing.Color.White;
+                    node.ImageKey = "FAIL";
+                    node.SelectedImageKey = "FAIL";
                     break;
                 default: // SKIP
-                    node.BackColor = System.Drawing.Color.LightGray;
-                    node.ForeColor = System.Drawing.Color.Black;
+                    node.ImageKey = "SKIP";
+                    node.SelectedImageKey = "SKIP";
                     break;
             }
+
+            // Giữ lại text gốc, không thêm ký hiệu
+            string originalText = node.Text;
+            if (originalText.StartsWith("✓ ") || originalText.StartsWith("✗ ") || originalText.StartsWith("○ "))
+            {
+                originalText = originalText.Substring(2);
+            }
+            node.Text = originalText;
         }
         private void UpdateFinalResultTextbox(bool isPass)
         {

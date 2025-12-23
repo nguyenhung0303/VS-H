@@ -5,7 +5,7 @@
       "Name": "POV1",
       "ExposureTime": 170000.0,
       "IsEnabled": false,
-      "ImagePath": "C:\\Users\\Administrator\\source\\repos\\nguyenhung0303\\VS-H\\vs-h\\bin\\Debug\\Captured\\snap_20251222_142456_946.png",
+      "ImagePath": "D:\\nguyenhung0303\\VS-H\\vs-h\\bin\\Debug\\Captured\\snap_20251223_092616_691.png",
       "SMDs": [
         {
           "Name": "tn1",
@@ -208,13 +208,13 @@
           }
         }
       ],
-      "CameraSN": ""
+      "CameraSN": "024131223062"
     },
     {
       "Name": "POV2",
       "ExposureTime": 900000.0,
       "IsEnabled": true,
-      "ImagePath": "C:\\Users\\Administrator\\source\\repos\\nguyenhung0303\\VS-H\\vs-h\\bin\\Debug\\Captured\\snap_20251222_132533_959.png",
+      "ImagePath": "D:\\nguyenhung0303\\VS-H\\vs-h\\bin\\Debug\\Captured\\snap_20251223_092628_463.png",
       "SMDs": [
         {
           "Name": "Mac",
