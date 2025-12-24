@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Drawing.Drawing2D;
 using System.IO.Ports;
+using WinSCP;
 
 namespace vs_h
 {
@@ -126,6 +127,144 @@ namespace vs_h
             richTextBox1.AppendText(line + "\r\n");
             richTextBox1.ScrollToCaret();
         }
+
+        private model.LogServerConfig LoadLogServerConfigFromModels()
+        {
+            try
+            {
+                string modelsDir = Path.GetFullPath(Path.Combine(Application.StartupPath, "..", "..", "Models"));
+                if (!Directory.Exists(modelsDir)) return null;
+
+                // lấy config từ file json đầu tiên (vì bạn lưu config cho tất cả model)
+                var firstFile = Directory.GetFiles(modelsDir, "*.json").FirstOrDefault();
+                if (firstFile == null) return null;
+
+                var json = File.ReadAllText(firstFile);
+                var m = JsonConvert.DeserializeObject<model.Model>(json);
+                if (m == null) return null;
+
+                return m.LogServer; // <-- bạn phải có property này trong model
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        private int GetPort(model.LogServerConfig cfg)
+        {
+            int port = 4422;
+
+            if (cfg == null) return port;
+
+            // nếu PortNumber là string
+            if (!string.IsNullOrWhiteSpace(cfg.PortNumber))
+            {
+                int p;
+                if (int.TryParse(cfg.PortNumber.Trim(), out p) && p > 0) port = p;
+            }
+
+            return port;
+        }
+
+        private void UploadFileSftp(string localPath, string remotePath, model.LogServerConfig cfg)
+        {
+            var sessionOptions = new SessionOptions
+            {
+                Protocol = Protocol.Sftp,
+                HostName = cfg.HostName,
+                PortNumber = GetPort(cfg),
+                UserName = cfg.UserName,
+                Password = cfg.PassWork,
+
+                GiveUpSecurityAndAcceptAnySshHostKey = true
+            };
+
+            using (var session = new Session())
+            {
+                session.Open(sessionOptions);
+
+                // tạo folder remote nếu cần
+                EnsureRemoteDirectory(session, Path.GetDirectoryName(remotePath).Replace("\\", "/"));
+
+                var transferOptions = new TransferOptions
+                {
+                    TransferMode = TransferMode.Binary
+                };
+
+                var result = session.PutFiles(localPath, remotePath, false, transferOptions);
+                result.Check();
+            }
+        }
+
+        private void EnsureRemoteDirectory(Session session, string remoteDir)
+        {
+            if (string.IsNullOrWhiteSpace(remoteDir)) return;
+            remoteDir = remoteDir.Replace("\\", "/");
+            if (!remoteDir.StartsWith("/")) remoteDir = "/" + remoteDir;
+            if (!remoteDir.EndsWith("/")) remoteDir += "/";
+
+            var parts = remoteDir.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            string current = "/";
+            for (int i = 0; i < parts.Length; i++)
+            {
+                current += parts[i] + "/";
+                if (!session.FileExists(current))
+                {
+                    session.CreateDirectory(current);
+                }
+            }
+        }
+
+        private async Task UploadTodayLogAsync(string finalResult)
+        {
+            try
+            {
+                var cfg = LoadLogServerConfigFromModels();
+                if (cfg == null)
+                {
+                    AppendLog("[UPLOAD] No LogServerConfig in Models");
+                    return;
+                }
+
+                string localLog = GetTodayLogPath();
+                if (!File.Exists(localLog))
+                {
+                    AppendLog("[UPLOAD] Local log not found: " + localLog);
+                    return;
+                }
+
+                // remote dir: /logs/yyyy-MM-dd/
+                string remoteBaseDir = "/VS_H";
+                string remoteDir = remoteBaseDir.TrimEnd('/')
+                 + "/LOG_txt/"
+                 + DateTime.Now.ToString("yyyy-MM-dd")
+                 + "/";
+                //remoteDir = remoteDir.TrimEnd('/') + "/" + DateTime.Now.ToString("yyyy-MM-dd") + "/";
+                //remoteDir = remoteDir.Replace("\\", "/");
+                if (!remoteDir.StartsWith("/")) remoteDir = "/" + remoteDir;
+                remoteDir = remoteDir.TrimEnd('/') + "/" + DateTime.Now.ToString("yyyy-MM-dd") + "/";
+
+                string remoteFile = string.Format(
+                    "RUN_{0}_{1}_{2}.txt",
+                    Environment.MachineName,
+                    DateTime.Now.ToString("yyyyMMdd_HHmmss"),
+                    string.IsNullOrWhiteSpace(finalResult) ? "NA" : finalResult
+                );
+
+                string remotePath = remoteDir + remoteFile;
+
+                // chạy upload trên thread nền để không đơ UI
+                await Task.Run(() => UploadFileSftp(localLog, remotePath, cfg));
+
+                AppendLog("[UPLOAD] OK -> " + remotePath);
+            }
+            catch (Exception ex)
+            {
+                AppendLog("[UPLOAD-ERR] " + ex.Message);
+            }
+        }
+
+
         private void ApplyExposureForSn(CamInfo ci)
         {
             if (ci == null || ci.Cam == null) return;
@@ -332,16 +471,15 @@ namespace vs_h
                 AppendLog("[RX-ERR] " + ex.Message);
             }
         }
-        private async Task SendAndWaitResultAsync(string sn)
+        private async Task<string> SendAndWaitResultAsync(string sn)
         {
             if (_sp == null || !_sp.IsOpen)
             {
                 AppendLog("[ERR] COM7 not open");
-                return;
+                return "NO_COM";
             }
-            if (string.IsNullOrWhiteSpace(sn)) return;
+            if (string.IsNullOrWhiteSpace(sn)) return "NO_SN";
 
-            // tạo Task chờ kết quả mới (hủy cái cũ nếu có)
             TaskCompletionSource<string> tcs;
             lock (_waitLock)
             {
@@ -350,31 +488,33 @@ namespace vs_h
                 tcs = _waitTcs;
             }
 
-            // set trạng thái WAIT
             SetResultUI("WAIT", Color.Gold, Color.Black);
 
-            // format: SN + 13 spaces + CHECK_CCD+++ + \r\n
             string msg = sn + new string(' ', 13) + "CHECK_CCD+++\r\n";
             _sp.Write(msg);
             AppendLog("[TX] " + msg.Replace("\r", "\\r").Replace("\n", "\\n"));
 
-            // chờ tối đa 5s
             var done = await Task.WhenAny(tcs.Task, Task.Delay(1000));
 
             if (done != tcs.Task)
             {
-                // timeout => SFC
                 SetResultUI("SFC", Color.OrangeRed, Color.White);
                 AppendLog("-----> SFC");
-                return;
+                return "SFC";
             }
 
-            // có kết quả
-            string res = await tcs.Task; // "PASS"/"FAIL"
+            string res = await tcs.Task; // PASS/FAIL
+
             if (string.Equals(res, "PASS", StringComparison.OrdinalIgnoreCase))
+            {
                 SetResultUI("PASS", Color.LimeGreen, Color.Black);
+                return "PASS";
+            }
             else
-                SetResultUI("FAIL", Color.Red, Color.White); // nếu bạn muốn
+            {
+                SetResultUI("FAIL", Color.Red, Color.White);
+                return "FAIL";
+            }
         }
 
         private void SetResultUI(string text, Color bg, Color fg)
@@ -543,6 +683,8 @@ namespace vs_h
             }
             e.Handled = true;
 
+            string finalComResult = null;
+
             if (string.Equals(txtResultRUN.Text, "PASS", StringComparison.OrdinalIgnoreCase))
             {
                 string Sn = (txtSnRUN.Lines.LastOrDefault() ?? "").Trim();
@@ -554,8 +696,17 @@ namespace vs_h
 
                 MessageBox.Show("SN gửi đi: " + Sn);
 
-                await SendAndWaitResultAsync(Sn);   // ✅ gửi đúng SN đã cắt
+                finalComResult = await SendAndWaitResultAsync(Sn);   // ✅ có kết quả PASS/FAIL/SFC
             }
+            else
+            {
+                // nếu test hình đã FAIL thì bạn vẫn muốn upload log -> gán "FAIL_IMG"
+                finalComResult = "FAIL_IMG";
+            }
+
+            // ✅ Upload log sau khi đã có kết quả cuối
+            await UploadTodayLogAsync(finalComResult);
+
             AppendLog("-------------------done-------------------");
             if (!string.IsNullOrWhiteSpace(_currentQrSerialNumber))
             {

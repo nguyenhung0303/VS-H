@@ -241,10 +241,10 @@
     }
   ],
   "LogServer": {
-    "HostName": "1234",
-    "PortNumber": 4422,
+    "HostName": "192.168.66.70",
+    "PortNumber": "4422",
     "UserName": "admin",
-    "PassWork": "1234",
+    "PassWork": "uiat",
     "Protocol": "SFTP"
   }
 }
