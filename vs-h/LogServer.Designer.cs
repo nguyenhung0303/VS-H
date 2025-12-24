@@ -28,78 +28,63 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.uiTextBox1 = new Sunny.UI.UITextBox();
-            this.uiTextBox2 = new Sunny.UI.UITextBox();
-            this.uiTextBox3 = new Sunny.UI.UITextBox();
-            this.uiTextBox4 = new Sunny.UI.UITextBox();
+            this.txtHostName = new Sunny.UI.UITextBox();
+            this.txtUserServer = new Sunny.UI.UITextBox();
+            this.txtPassServer = new Sunny.UI.UITextBox();
             this.Hostname = new Sunny.UI.UILabel();
             this.uiLabel2 = new Sunny.UI.UILabel();
             this.uiLabel3 = new Sunny.UI.UILabel();
             this.Pass = new Sunny.UI.UILabel();
             this.uiGroupBox1 = new Sunny.UI.UIGroupBox();
-            this.uiButton1 = new Sunny.UI.UIButton();
+            this.btnSaveServer = new Sunny.UI.UIButton();
+            this.txtPort = new Sunny.UI.UITextBox();
             this.uiGroupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // uiTextBox1
+            // txtHostName
             // 
-            this.uiTextBox1.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.uiTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.uiTextBox1.Location = new System.Drawing.Point(31, 76);
-            this.uiTextBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.uiTextBox1.MinimumSize = new System.Drawing.Size(1, 16);
-            this.uiTextBox1.Name = "uiTextBox1";
-            this.uiTextBox1.Padding = new System.Windows.Forms.Padding(5);
-            this.uiTextBox1.ShowText = false;
-            this.uiTextBox1.Size = new System.Drawing.Size(329, 29);
-            this.uiTextBox1.TabIndex = 0;
-            this.uiTextBox1.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
-            this.uiTextBox1.Watermark = "";
+            this.txtHostName.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtHostName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.txtHostName.Location = new System.Drawing.Point(31, 76);
+            this.txtHostName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtHostName.MinimumSize = new System.Drawing.Size(1, 16);
+            this.txtHostName.Name = "txtHostName";
+            this.txtHostName.Padding = new System.Windows.Forms.Padding(5);
+            this.txtHostName.ShowText = false;
+            this.txtHostName.Size = new System.Drawing.Size(329, 29);
+            this.txtHostName.TabIndex = 0;
+            this.txtHostName.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
+            this.txtHostName.Watermark = "";
             // 
-            // uiTextBox2
+            // txtUserServer
             // 
-            this.uiTextBox2.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.uiTextBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.uiTextBox2.Location = new System.Drawing.Point(31, 153);
-            this.uiTextBox2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.uiTextBox2.MinimumSize = new System.Drawing.Size(1, 16);
-            this.uiTextBox2.Name = "uiTextBox2";
-            this.uiTextBox2.Padding = new System.Windows.Forms.Padding(5);
-            this.uiTextBox2.ShowText = false;
-            this.uiTextBox2.Size = new System.Drawing.Size(253, 29);
-            this.uiTextBox2.TabIndex = 3;
-            this.uiTextBox2.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
-            this.uiTextBox2.Watermark = "";
+            this.txtUserServer.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtUserServer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.txtUserServer.Location = new System.Drawing.Point(31, 153);
+            this.txtUserServer.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtUserServer.MinimumSize = new System.Drawing.Size(1, 16);
+            this.txtUserServer.Name = "txtUserServer";
+            this.txtUserServer.Padding = new System.Windows.Forms.Padding(5);
+            this.txtUserServer.ShowText = false;
+            this.txtUserServer.Size = new System.Drawing.Size(253, 29);
+            this.txtUserServer.TabIndex = 3;
+            this.txtUserServer.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
+            this.txtUserServer.Watermark = "";
             // 
-            // uiTextBox3
+            // txtPassServer
             // 
-            this.uiTextBox3.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.uiTextBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.uiTextBox3.Location = new System.Drawing.Point(292, 153);
-            this.uiTextBox3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.uiTextBox3.MinimumSize = new System.Drawing.Size(1, 16);
-            this.uiTextBox3.Name = "uiTextBox3";
-            this.uiTextBox3.Padding = new System.Windows.Forms.Padding(5);
-            this.uiTextBox3.ShowText = false;
-            this.uiTextBox3.Size = new System.Drawing.Size(251, 29);
-            this.uiTextBox3.TabIndex = 3;
-            this.uiTextBox3.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
-            this.uiTextBox3.Watermark = "";
-            // 
-            // uiTextBox4
-            // 
-            this.uiTextBox4.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.uiTextBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.uiTextBox4.Location = new System.Drawing.Point(393, 76);
-            this.uiTextBox4.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.uiTextBox4.MinimumSize = new System.Drawing.Size(1, 16);
-            this.uiTextBox4.Name = "uiTextBox4";
-            this.uiTextBox4.Padding = new System.Windows.Forms.Padding(5);
-            this.uiTextBox4.ShowText = false;
-            this.uiTextBox4.Size = new System.Drawing.Size(150, 29);
-            this.uiTextBox4.TabIndex = 3;
-            this.uiTextBox4.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
-            this.uiTextBox4.Watermark = "";
+            this.txtPassServer.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtPassServer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.txtPassServer.Location = new System.Drawing.Point(292, 153);
+            this.txtPassServer.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtPassServer.MinimumSize = new System.Drawing.Size(1, 16);
+            this.txtPassServer.Name = "txtPassServer";
+            this.txtPassServer.Padding = new System.Windows.Forms.Padding(5);
+            this.txtPassServer.ShowText = false;
+            this.txtPassServer.Size = new System.Drawing.Size(251, 29);
+            this.txtPassServer.TabIndex = 3;
+            this.txtPassServer.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
+            this.txtPassServer.Watermark = "";
             // 
             // Hostname
             // 
@@ -143,13 +128,13 @@
             // 
             // uiGroupBox1
             // 
-            this.uiGroupBox1.Controls.Add(this.uiTextBox1);
+            this.uiGroupBox1.Controls.Add(this.txtHostName);
             this.uiGroupBox1.Controls.Add(this.Pass);
-            this.uiGroupBox1.Controls.Add(this.uiTextBox4);
+            this.uiGroupBox1.Controls.Add(this.txtPort);
             this.uiGroupBox1.Controls.Add(this.uiLabel3);
-            this.uiGroupBox1.Controls.Add(this.uiTextBox3);
+            this.uiGroupBox1.Controls.Add(this.txtPassServer);
             this.uiGroupBox1.Controls.Add(this.uiLabel2);
-            this.uiGroupBox1.Controls.Add(this.uiTextBox2);
+            this.uiGroupBox1.Controls.Add(this.txtUserServer);
             this.uiGroupBox1.Controls.Add(this.Hostname);
             this.uiGroupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
             this.uiGroupBox1.Location = new System.Drawing.Point(34, 51);
@@ -162,29 +147,46 @@
             this.uiGroupBox1.Text = "Session";
             this.uiGroupBox1.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // uiButton1
+            // btnSaveServer
             // 
-            this.uiButton1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.uiButton1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.uiButton1.Location = new System.Drawing.Point(308, 337);
-            this.uiButton1.MinimumSize = new System.Drawing.Size(1, 1);
-            this.uiButton1.Name = "uiButton1";
-            this.uiButton1.Size = new System.Drawing.Size(100, 35);
-            this.uiButton1.TabIndex = 9;
-            this.uiButton1.Text = "Save";
-            this.uiButton1.TipsFont = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.btnSaveServer.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnSaveServer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.btnSaveServer.Location = new System.Drawing.Point(308, 337);
+            this.btnSaveServer.MinimumSize = new System.Drawing.Size(1, 1);
+            this.btnSaveServer.Name = "btnSaveServer";
+            this.btnSaveServer.Size = new System.Drawing.Size(100, 35);
+            this.btnSaveServer.TabIndex = 9;
+            this.btnSaveServer.Text = "Save";
+            this.btnSaveServer.TipsFont = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.btnSaveServer.Click += new System.EventHandler(this.btnSaveServer_Click);
+            // 
+            // txtPort
+            // 
+            this.txtPort.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtPort.Enabled = false;
+            this.txtPort.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.txtPort.Location = new System.Drawing.Point(393, 76);
+            this.txtPort.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtPort.MinimumSize = new System.Drawing.Size(1, 16);
+            this.txtPort.Name = "txtPort";
+            this.txtPort.Padding = new System.Windows.Forms.Padding(5);
+            this.txtPort.ShowText = false;
+            this.txtPort.Size = new System.Drawing.Size(150, 29);
+            this.txtPort.TabIndex = 3;
+            this.txtPort.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
+            this.txtPort.Watermark = "";
             // 
             // LogServer
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.BlanchedAlmond;
             this.ClientSize = new System.Drawing.Size(730, 401);
-            this.Controls.Add(this.uiButton1);
+            this.Controls.Add(this.btnSaveServer);
             this.Controls.Add(this.uiGroupBox1);
             this.Name = "LogServer";
             this.Text = "LogServer";
             this.ZoomScaleRect = new System.Drawing.Rectangle(15, 15, 730, 401);
-            this.Load += new System.EventHandler(this.LogServer_Load);
+   
             this.uiGroupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -192,15 +194,15 @@
 
         #endregion
 
-        private Sunny.UI.UITextBox uiTextBox1;
-        private Sunny.UI.UITextBox uiTextBox2;
-        private Sunny.UI.UITextBox uiTextBox3;
-        private Sunny.UI.UITextBox uiTextBox4;
+        private Sunny.UI.UITextBox txtHostName;
+        private Sunny.UI.UITextBox txtUserServer;
+        private Sunny.UI.UITextBox txtPassServer;
         private Sunny.UI.UILabel Hostname;
         private Sunny.UI.UILabel uiLabel2;
         private Sunny.UI.UILabel uiLabel3;
         private Sunny.UI.UILabel Pass;
         private Sunny.UI.UIGroupBox uiGroupBox1;
-        private Sunny.UI.UIButton uiButton1;
+        private Sunny.UI.UIButton btnSaveServer;
+        private Sunny.UI.UITextBox txtPort;
     }
 }

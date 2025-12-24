@@ -239,5 +239,12 @@
       ],
       "CameraSN": "029022810191"
     }
-  ]
+  ],
+  "LogServer": {
+    "HostName": "1234",
+    "PortNumber": 4422,
+    "UserName": "admin",
+    "PassWork": "1234",
+    "Protocol": "SFTP"
+  }
 }

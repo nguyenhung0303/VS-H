@@ -5,6 +5,15 @@ namespace vs_h
 {
     public class model
     {
+
+        public class LogServerConfig
+        {
+            public string HostName { get; set; }
+            public string PortNumber { get; set; } = "4422";     // default 4422
+            public string UserName { get; set; }
+            public string PassWork { get; set; }            // ✅ đúng tên bạn yêu cầu
+            public string Protocol { get; set; } = "SFTP";  // default SFTP
+        }
         // =====================
         // ROI
         // =====================
@@ -75,6 +84,8 @@ namespace vs_h
         {
             public string Name { get; set; }
             public List<POV> POVs { get; set; } = new List<POV>();
+
+            public LogServerConfig LogServer { get; set; } = new LogServerConfig();
         }
         public class CameraItem
         {
