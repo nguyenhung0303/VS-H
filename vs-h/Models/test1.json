@@ -5,7 +5,7 @@
       "Name": "POV1",
       "ExposureTime": 170000.0,
       "IsEnabled": false,
-      "ImagePath": "D:\\nguyenhung0303\\VS-H\\vs-h\\bin\\Debug\\Captured\\snap_20251223_092616_691.png",
+      "ImagePath": "D:\\nguyenhung0303\\VS-H\\vs-h\\bin\\Debug\\Captured\\snap_20251225_074120_139.png",
       "SMDs": [
         {
           "Name": "tn1",
@@ -79,8 +79,8 @@
           },
           "Algorithm": "HSV",
           "HSV": {
-            "HMin": 0,
-            "HMax": 128,
+            "HMin": 1,
+            "HMax": 58,
             "SMin": 0,
             "SMax": 255,
             "ScoreMin": 5000.0,
@@ -241,10 +241,10 @@
     }
   ],
   "LogServer": {
-    "HostName": "192.168.66.70",
+    "HostName": "192.168.64.11",
     "PortNumber": "4422",
-    "UserName": "admin",
-    "PassWork": "uiat",
+    "UserName": "user",
+    "PassWork": "ubnt",
     "Protocol": "SFTP"
   }
 }

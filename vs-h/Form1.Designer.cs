@@ -92,9 +92,9 @@
             // 
             // txtFinalResult
             // 
+            this.txtFinalResult.BackColor = System.Drawing.Color.LightBlue;
             this.txtFinalResult.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtFinalResult.Dock = System.Windows.Forms.DockStyle.Top;
-            this.txtFinalResult.Enabled = false;
             this.txtFinalResult.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtFinalResult.Location = new System.Drawing.Point(0, 33);
             this.txtFinalResult.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
