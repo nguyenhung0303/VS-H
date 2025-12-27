@@ -36,8 +36,9 @@
             this.uiLabel3 = new Sunny.UI.UILabel();
             this.Pass = new Sunny.UI.UILabel();
             this.uiGroupBox1 = new Sunny.UI.UIGroupBox();
-            this.btnSaveServer = new Sunny.UI.UIButton();
             this.txtPort = new Sunny.UI.UITextBox();
+            this.btnSaveServer = new Sunny.UI.UIButton();
+            this.btnTestConnection = new Sunny.UI.UIButton();
             this.uiGroupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -147,19 +148,6 @@
             this.uiGroupBox1.Text = "Session";
             this.uiGroupBox1.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // btnSaveServer
-            // 
-            this.btnSaveServer.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnSaveServer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.btnSaveServer.Location = new System.Drawing.Point(308, 337);
-            this.btnSaveServer.MinimumSize = new System.Drawing.Size(1, 1);
-            this.btnSaveServer.Name = "btnSaveServer";
-            this.btnSaveServer.Size = new System.Drawing.Size(100, 35);
-            this.btnSaveServer.TabIndex = 9;
-            this.btnSaveServer.Text = "Save";
-            this.btnSaveServer.TipsFont = new System.Drawing.Font("Microsoft Sans Serif", 9F);
-            this.btnSaveServer.Click += new System.EventHandler(this.btnSaveServer_Click);
-            // 
             // txtPort
             // 
             this.txtPort.Cursor = System.Windows.Forms.Cursors.IBeam;
@@ -176,17 +164,43 @@
             this.txtPort.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
             this.txtPort.Watermark = "";
             // 
+            // btnSaveServer
+            // 
+            this.btnSaveServer.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnSaveServer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.btnSaveServer.Location = new System.Drawing.Point(308, 337);
+            this.btnSaveServer.MinimumSize = new System.Drawing.Size(1, 1);
+            this.btnSaveServer.Name = "btnSaveServer";
+            this.btnSaveServer.Size = new System.Drawing.Size(100, 35);
+            this.btnSaveServer.TabIndex = 9;
+            this.btnSaveServer.Text = "Save";
+            this.btnSaveServer.TipsFont = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.btnSaveServer.Click += new System.EventHandler(this.btnSaveServer_Click);
+            // 
+            // btnTestConnection
+            // 
+            this.btnTestConnection.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnTestConnection.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.btnTestConnection.Location = new System.Drawing.Point(93, 337);
+            this.btnTestConnection.MinimumSize = new System.Drawing.Size(1, 1);
+            this.btnTestConnection.Name = "btnTestConnection";
+            this.btnTestConnection.Size = new System.Drawing.Size(100, 35);
+            this.btnTestConnection.TabIndex = 10;
+            this.btnTestConnection.Text = "uiButton1";
+            this.btnTestConnection.TipsFont = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.btnTestConnection.Click += new System.EventHandler(this.btnTestConnection_Click);
+            // 
             // LogServer
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.BlanchedAlmond;
             this.ClientSize = new System.Drawing.Size(730, 401);
+            this.Controls.Add(this.btnTestConnection);
             this.Controls.Add(this.btnSaveServer);
             this.Controls.Add(this.uiGroupBox1);
             this.Name = "LogServer";
             this.Text = "LogServer";
             this.ZoomScaleRect = new System.Drawing.Rectangle(15, 15, 730, 401);
-   
             this.uiGroupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -204,5 +218,6 @@
         private Sunny.UI.UIGroupBox uiGroupBox1;
         private Sunny.UI.UIButton btnSaveServer;
         private Sunny.UI.UITextBox txtPort;
+        private Sunny.UI.UIButton btnTestConnection;
     }
 }

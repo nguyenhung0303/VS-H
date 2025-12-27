@@ -98,7 +98,51 @@ namespace vs_h
             MessageBox.Show("Đã lưu LogServer cho tất cả model.\nOK: " + ok + "\nFAIL: " + fail);
         }
 
+        private void btnTestConnection_Click(object sender, EventArgs e)
+        {
+            string host = (txtHostName.Text ?? "").Trim();
+            string user = (txtUserServer.Text ?? "").Trim();
+            string pass = txtPassServer.Text ?? "";
+            string port = (txtPort.Text ?? "4422").Trim();
 
+            if (string.IsNullOrWhiteSpace(host))
+            {
+                MessageBox.Show("Vui lòng nhập Host Name!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
+            if (string.IsNullOrWhiteSpace(user))
+            {
+                MessageBox.Show("Vui lòng nhập User Name!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var config = new model.LogServerConfig
+            {
+                HostName = host,
+                UserName = user,
+                PassWork = pass,
+                PortNumber = port,
+                Protocol = "SFTP"
+            };
+
+            var uploader = new SftpUploader(config);
+
+            this.Cursor = Cursors.WaitCursor;
+
+            string error;
+            bool success = uploader.TestConnection(out error);
+
+            this.Cursor = Cursors.Default;
+
+            if (success)
+            {
+                MessageBox.Show("✅ Kết nối thành công!", "Test Connection", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show($"❌ Kết nối thất bại!\n\n{error}", "Test Connection", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
 }

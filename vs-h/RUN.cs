@@ -27,6 +27,7 @@ namespace vs_h
 
         private readonly object _fileLogLock = new object();
         private string _logDir;
+        private SftpUploader _sftpUploader;
 
         private string GetTodayLogPath()
         {
@@ -282,6 +283,41 @@ namespace vs_h
             {
                 MessageBox.Show("Lỗi khi kết nối camera tự động: " + ex.Message);
             }
+
+            // ✅ Load SFTP config từ model đầu tiên
+            try
+            {
+                string modelsDir = Path.GetFullPath(Path.Combine(Application.StartupPath, "..", "..", "Models"));
+                if (Directory.Exists(modelsDir))
+                {
+                    var firstModel = Directory.GetFiles(modelsDir, "*.json").FirstOrDefault();
+                    if (firstModel != null)
+                    {
+                        var json = File.ReadAllText(firstModel);
+                        var model = JsonConvert.DeserializeObject<model.Model>(json);
+                        if (model?.LogServer != null)
+                        {
+                            _sftpUploader = new SftpUploader(model.LogServer);
+
+                            // Test connection (optional)
+                            string error;
+                            if (_sftpUploader.TestConnection(out error))
+                            {
+                                AppendLog("[SFTP] Connected successfully");
+                            }
+                            else
+                            {
+                                AppendLog($"[SFTP] Connection failed: {error}");
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AppendLog($"[SFTP] Init failed: {ex.Message}");
+            }
+
             try
             {
                 _sp = new SerialPort("COM7", 9600, Parity.None, 8, StopBits.One);
@@ -295,6 +331,9 @@ namespace vs_h
             {
                 MessageBox.Show("Không mở được COM7: " + ex.Message);
             }
+
+
+
 
         }
         private void Sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -504,19 +543,7 @@ namespace vs_h
             // 3) Test -> lấy danh sách ROI PASS/FAIL theo SN
             Dictionary<string, List<RoiDraw>> drawMap = PerformChecksForCaptured(snToFile);
             // commm
-            //if (txtResultRUN.Text == "PASS")
-            //{
-            //    // Lấy SN (bạn đang append nhiều dòng "CameraSN: decoded")
-            //    // Tạm thời lấy dòng cuối cùng:
-            //    string Sn = (txtSnRUN.Lines.LastOrDefault() ?? "").Trim();
-            //    if (Sn.Length > 12) Sn = Sn.Substring(0, 12);
-            //    MessageBox.Show("SN gửi đi: " + Sn);
-            //    if (!string.IsNullOrWhiteSpace(Sn))
-            //    {
-            //        string msg = Sn + new string(' ', 13) + "CHECK_CCD+++\r\n";
-            //        try { _sp?.Write(msg); } catch { }
-            //    }
-            //}
+          
 
             // 4) Vẽ ROI lên ảnh và show lên từng PictureBox
             for (int i = 0; i < _camInfos.Count; i++)
@@ -594,7 +621,92 @@ namespace vs_h
             }
 
 
+            if (!string.IsNullOrWhiteSpace(_currentQrSerialNumber))
+            {
+                // ✅ Tạo timestamp 1 lần duy nhất cho toàn bộ lần test này
+                string testTimestamp = DateTime.Now.ToString("HHmmss");
+
+                foreach (var info in _camInfos)
+                {
+                    Bitmap shot = GetPictureBoxBitmapCloneSafe(info.Pb);
+                    if (shot == null) continue;
+
+                    try
+                    {
+                        List<RoiDraw> rois = null;
+                        if (drawMap != null)
+                            drawMap.TryGetValue(info.SN, out rois);
+
+                        bool hasHsv = HasHsvRoi(rois);
+                        bool hasQr = HasQrRoi(rois);
+
+                        bool isPassCam = true;
+                        if (rois != null && rois.Count > 0)
+                            isPassCam = rois.All(r => r.Pass);
+
+                        // 1) Lưu local như cũ
+                        if (hasHsv)
+                            _logManager.SaveImage(shot, _currentQrSerialNumber, info.SN, isPassCam, "RUN");
+
+                        if (hasQr)
+                            _logManager.SaveQrImage(shot, _currentQrSerialNumber, info.SN, "RUN");
+
+                        // ✅ 2) Upload lên SFTP server (truyền testTimestamp chung)
+                        if (_sftpUploader != null)
+                        {
+                            // Upload ảnh HSV (vào OK/NG)
+                            if (hasHsv)
+                            {
+                                string remotePath = _sftpUploader.UploadImage(
+                                    shot,
+                                    _currentQrSerialNumber,
+                                    info.SN,
+                                    isPassCam,
+                                    testTimestamp  // ✅ truyền timestamp chung
+                                );
+
+                                if (!string.IsNullOrWhiteSpace(remotePath))
+                                {
+                                    AppendLog($"[SFTP] Uploaded HSV: {remotePath}");
+                                }
+                                else
+                                {
+                                    AppendLog($"[SFTP] Upload HSV failed for {info.SN}");
+                                }
+                            }
+
+                            // Upload ảnh QR (cũng vào OK/NG theo kết quả)
+                            if (hasQr)
+                            {
+                                string remotePath = _sftpUploader.UploadImage(
+                                    shot,
+                                    _currentQrSerialNumber,
+                                    info.SN,
+                                    isPassCam,
+                                    testTimestamp  // ✅ truyền timestamp chung
+                                );
+
+                                if (!string.IsNullOrWhiteSpace(remotePath))
+                                {
+                                    AppendLog($"[SFTP] Uploaded QR: {remotePath}");
+                                }
+                                else
+                                {
+                                    AppendLog($"[SFTP] Upload QR failed for {info.SN}");
+                                }
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        shot.Dispose();
+                    }
+                }
+            }
         }
+
+
+        
 
 
         private Dictionary<string, List<RoiDraw>> PerformChecksForCaptured(Dictionary<string, string> snToFile)
