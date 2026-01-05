@@ -217,6 +217,13 @@ namespace vs_h
 
         private async Task UploadTodayLogAsync(string finalResult)
         {
+            // ✅ Kiểm tra checkbox
+            if (!IsLogServerEnabled())
+            {
+                AppendLog("[UPLOAD] Disabled - Server upload is turned OFF");
+                return;
+            }
+
             try
             {
                 var cfg = LoadLogServerConfigFromModels();
@@ -233,37 +240,85 @@ namespace vs_h
                     return;
                 }
 
-                // remote dir: /logs/yyyy-MM-dd/
-                string remoteBaseDir = "/VS_H";
-                string remoteDir = remoteBaseDir.TrimEnd('/')
-                 + "/LOG_txt/"
-                 + DateTime.Now.ToString("yyyy-MM-dd")
-                 + "/";
-                //remoteDir = remoteDir.TrimEnd('/') + "/" + DateTime.Now.ToString("yyyy-MM-dd") + "/";
-                //remoteDir = remoteDir.Replace("\\", "/");
-                if (!remoteDir.StartsWith("/")) remoteDir = "/" + remoteDir;
-                remoteDir = remoteDir.TrimEnd('/') + "/" + DateTime.Now.ToString("yyyy-MM-dd") + "/";
+                string originalFileName = Path.GetFileName(localLog);
+                string remoteDir = "/VS_H/LOG_txt/" + DateTime.Now.ToString("yyyy-MM-dd") + "/";
+                string remotePath = remoteDir + originalFileName;
 
-                string remoteFile = string.Format(
-                    "RUN_{0}_{1}_{2}.txt",
-                    Environment.MachineName,
-                    DateTime.Now.ToString("yyyyMMdd_HHmmss"),
-                    string.IsNullOrWhiteSpace(finalResult) ? "NA" : finalResult
-                );
-
-                string remotePath = remoteDir + remoteFile;
-
-                // chạy upload trên thread nền để không đơ UI
                 await Task.Run(() => UploadFileSftp(localLog, remotePath, cfg));
 
-                AppendLog("[UPLOAD] OK -> " + remotePath);
+                AppendLog($"[UPLOAD] OK -> {remotePath} (Result: {finalResult})");
             }
             catch (Exception ex)
             {
                 AppendLog("[UPLOAD-ERR] " + ex.Message);
             }
         }
+        private bool IsLogServerEnabled()
+        {
+            try
+            {
+                var cfg = LoadLogServerConfigFromModels();
+                if (cfg == null) return false;
 
+                // ✅ Kiểm tra EnableUpload từ config
+                return cfg.EnableUpload;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        private async Task UploadImageAsync(string localImagePath, string serialNumber, string cameraSN, bool isPass, string povName)
+        {
+            // ✅ Kiểm tra checkbox
+            if (!IsLogServerEnabled())
+                return;
+
+            try
+            {
+                var cfg = LoadLogServerConfigFromModels();
+                if (cfg == null || !File.Exists(localImagePath))
+                    return;
+
+                string logBaseDir = @"D:\LOG_VS-H";
+                string relativePath = localImagePath.Replace(logBaseDir, "").TrimStart('\\', '/');
+                string remotePath = "/VS_H/" + relativePath.Replace("\\", "/");
+
+                await Task.Run(() => UploadFileSftp(localImagePath, remotePath, cfg));
+
+                AppendLog($"[UPLOAD-IMG] {Path.GetFileName(localImagePath)}");
+            }
+            catch (Exception ex)
+            {
+                AppendLog($"[UPLOAD-IMG-ERR] {ex.Message}");
+            }
+        }
+
+        private async Task UploadQrImageAsync(string localImagePath)
+        {
+            // ✅ Kiểm tra checkbox
+            if (!IsLogServerEnabled())
+                return;
+
+            try
+            {
+                var cfg = LoadLogServerConfigFromModels();
+                if (cfg == null || !File.Exists(localImagePath))
+                    return;
+
+                string logBaseDir = @"D:\LOG_VS-H";
+                string relativePath = localImagePath.Replace(logBaseDir, "").TrimStart('\\', '/');
+                string remotePath = "/VS_H/" + relativePath.Replace("\\", "/");
+
+                await Task.Run(() => UploadFileSftp(localImagePath, remotePath, cfg));
+
+                AppendLog($"[UPLOAD-QR] {Path.GetFileName(localImagePath)}");
+            }
+            catch (Exception ex)
+            {
+                AppendLog($"[UPLOAD-QR-ERR] {ex.Message}");
+            }
+        }
 
         private void ApplyExposureForSn(CamInfo ci)
         {
@@ -707,7 +762,7 @@ namespace vs_h
             // ✅ Upload log sau khi đã có kết quả cuối
             await UploadTodayLogAsync(finalComResult);
 
-            AppendLog("-------------------done-------------------");
+            
             if (!string.IsNullOrWhiteSpace(_currentQrSerialNumber))
             {
                 foreach (var info in _camInfos)
@@ -717,8 +772,7 @@ namespace vs_h
 
                     try
                     {
-                        List<RoiDraw> rois = null; // ✅ luôn có giá trị (null) từ đầu
-
+                        List<RoiDraw> rois = null;
                         if (drawMap != null)
                             drawMap.TryGetValue(info.SN, out rois);
 
@@ -729,13 +783,27 @@ namespace vs_h
                         if (rois != null && rois.Count > 0)
                             isPassCam = rois.All(r => r.Pass);
 
-                        // ✅ 1) Có HSV thì lưu OK/NG
+                        // ✅ 1) Lưu HSV local và upload
                         if (hasHsv)
-                            _logManager.SaveImage(shot, _currentQrSerialNumber, info.SN, isPassCam, "RUN");
+                        {
+                            string savedPath = _logManager.SaveImage(shot, _currentQrSerialNumber, info.SN, isPassCam, "RUN");
+                            if (!string.IsNullOrWhiteSpace(savedPath))
+                            {
+                                // Upload ngay sau khi lưu local
+                                await UploadImageAsync(savedPath, _currentQrSerialNumber, info.SN, isPassCam, "RUN");
+                            }
+                        }
 
-                        // ✅ 2) Có QR thì lưu vào folder QR
+                        // ✅ 2) Lưu QR local và upload
                         if (hasQr)
-                            _logManager.SaveQrImage(shot, _currentQrSerialNumber, info.SN, "RUN");
+                        {
+                            string savedQrPath = _logManager.SaveQrImage(shot, _currentQrSerialNumber, info.SN, "RUN");
+                            if (!string.IsNullOrWhiteSpace(savedQrPath))
+                            {
+                                // Upload ngay sau khi lưu local
+                                await UploadQrImageAsync(savedQrPath);
+                            }
+                        }
                     }
                     finally
                     {
@@ -743,7 +811,7 @@ namespace vs_h
                     }
                 }
             }
-
+            AppendLog("-------------------done-------------------");
 
         }
 

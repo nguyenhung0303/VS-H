@@ -13,6 +13,8 @@ namespace vs_h
             public string UserName { get; set; }
             public string PassWork { get; set; }            // ✅ đúng tên bạn yêu cầu
             public string Protocol { get; set; } = "SFTP";  // default SFTP
+
+            public bool EnableUpload { get; set; } = false; // ✅ bật/tắt upload log
         }
         // =====================
         // ROI

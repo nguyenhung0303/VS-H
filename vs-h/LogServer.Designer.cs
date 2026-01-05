@@ -36,8 +36,9 @@
             this.uiLabel3 = new Sunny.UI.UILabel();
             this.Pass = new Sunny.UI.UILabel();
             this.uiGroupBox1 = new Sunny.UI.UIGroupBox();
-            this.btnSaveServer = new Sunny.UI.UIButton();
             this.txtPort = new Sunny.UI.UITextBox();
+            this.btnSaveServer = new Sunny.UI.UIButton();
+            this.CheckBoxLogSever = new Sunny.UI.UICheckBox();
             this.uiGroupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -147,19 +148,6 @@
             this.uiGroupBox1.Text = "Session";
             this.uiGroupBox1.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // btnSaveServer
-            // 
-            this.btnSaveServer.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnSaveServer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.btnSaveServer.Location = new System.Drawing.Point(308, 337);
-            this.btnSaveServer.MinimumSize = new System.Drawing.Size(1, 1);
-            this.btnSaveServer.Name = "btnSaveServer";
-            this.btnSaveServer.Size = new System.Drawing.Size(100, 35);
-            this.btnSaveServer.TabIndex = 9;
-            this.btnSaveServer.Text = "Save";
-            this.btnSaveServer.TipsFont = new System.Drawing.Font("Microsoft Sans Serif", 9F);
-            this.btnSaveServer.Click += new System.EventHandler(this.btnSaveServer_Click);
-            // 
             // txtPort
             // 
             this.txtPort.Cursor = System.Windows.Forms.Cursors.IBeam;
@@ -176,17 +164,43 @@
             this.txtPort.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
             this.txtPort.Watermark = "";
             // 
+            // btnSaveServer
+            // 
+            this.btnSaveServer.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnSaveServer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.btnSaveServer.Location = new System.Drawing.Point(308, 337);
+            this.btnSaveServer.MinimumSize = new System.Drawing.Size(1, 1);
+            this.btnSaveServer.Name = "btnSaveServer";
+            this.btnSaveServer.Size = new System.Drawing.Size(100, 35);
+            this.btnSaveServer.TabIndex = 9;
+            this.btnSaveServer.Text = "Save";
+            this.btnSaveServer.TipsFont = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.btnSaveServer.Click += new System.EventHandler(this.btnSaveServer_Click);
+            // 
+            // CheckBoxLogSever
+            // 
+            this.CheckBoxLogSever.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.CheckBoxLogSever.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.CheckBoxLogSever.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.CheckBoxLogSever.Location = new System.Drawing.Point(65, 342);
+            this.CheckBoxLogSever.MinimumSize = new System.Drawing.Size(1, 1);
+            this.CheckBoxLogSever.Name = "CheckBoxLogSever";
+            this.CheckBoxLogSever.RadiusSides = Sunny.UI.UICornerRadiusSides.None;
+            this.CheckBoxLogSever.Size = new System.Drawing.Size(179, 29);
+            this.CheckBoxLogSever.TabIndex = 10;
+            this.CheckBoxLogSever.Text = "CheckBoxLogSever";
+            // 
             // LogServer
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.BlanchedAlmond;
             this.ClientSize = new System.Drawing.Size(730, 401);
+            this.Controls.Add(this.CheckBoxLogSever);
             this.Controls.Add(this.btnSaveServer);
             this.Controls.Add(this.uiGroupBox1);
             this.Name = "LogServer";
             this.Text = "LogServer";
             this.ZoomScaleRect = new System.Drawing.Rectangle(15, 15, 730, 401);
-   
             this.uiGroupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -204,5 +218,6 @@
         private Sunny.UI.UIGroupBox uiGroupBox1;
         private Sunny.UI.UIButton btnSaveServer;
         private Sunny.UI.UITextBox txtPort;
+        private Sunny.UI.UICheckBox CheckBoxLogSever;
     }
 }

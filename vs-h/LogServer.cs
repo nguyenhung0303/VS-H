@@ -11,17 +11,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static vs_h.model;
+
 namespace vs_h
 {
     public partial class LogServer : UIForm
     {
-      
+        // ✅ Thêm checkbox vào Designer hoặc tạo ở đây
+        // Tên checkbox: CheckBoxLogServer (bạn đã tạo rồi)
+
         public LogServer(LogServerConfig cfg = null)
         {
             InitializeComponent();
             LoadAnyModelToTextboxes();
-
         }
+
         private void LogServer_Load(object sender, EventArgs e)
         {
             LoadAnyModelToTextboxes();
@@ -39,14 +42,15 @@ namespace vs_h
             if (model == null) model = new Model();
             if (model.LogServer == null) model.LogServer = new LogServerConfig();
 
+            // ✅ Load dữ liệu vào textbox
             txtHostName.Text = model.LogServer.HostName ?? "";
             txtUserServer.Text = model.LogServer.UserName ?? "";
             txtPassServer.Text = model.LogServer.PassWork ?? "";
-            txtPort.Text = model.LogServer.PortNumber ?? "";
+            txtPort.Text = model.LogServer.PortNumber ?? "4422";
+
+            // ✅ Load trạng thái checkbox
+            CheckBoxLogSever.Checked = model.LogServer.EnableUpload;
         }
-
-
-
 
         private void btnSaveServer_Click(object sender, EventArgs e)
         {
@@ -60,6 +64,10 @@ namespace vs_h
             string host = (txtHostName.Text ?? "").Trim();
             string user = (txtUserServer.Text ?? "").Trim();
             string pass = txtPassServer.Text ?? "";
+            string port = (txtPort.Text ?? "4422").Trim();
+
+            // ✅ Lấy trạng thái checkbox
+            bool enableUpload = CheckBoxLogSever.Checked;
 
             string[] files = Directory.GetFiles(folderPath, "*.json");
             if (files.Length == 0)
@@ -69,22 +77,21 @@ namespace vs_h
             }
 
             int ok = 0, fail = 0;
-
             foreach (string file in files)
             {
                 try
                 {
                     Model model = JsonConvert.DeserializeObject<Model>(File.ReadAllText(file));
                     if (model == null) { fail++; continue; }
-
                     if (model.LogServer == null) model.LogServer = new LogServerConfig();
 
+                    // ✅ Lưu tất cả thông tin
                     model.LogServer.HostName = host;
                     model.LogServer.UserName = user;
                     model.LogServer.PassWork = pass;
-
-                    model.LogServer.PortNumber = "4422";  // ✅ luôn 4422
-                    model.LogServer.Protocol = "SFTP";  // ✅ luôn SFTP
+                    model.LogServer.PortNumber = port;
+                    model.LogServer.Protocol = "SFTP";
+                    model.LogServer.EnableUpload = enableUpload; // ✅ Lưu trạng thái checkbox
 
                     File.WriteAllText(file, JsonConvert.SerializeObject(model, Formatting.Indented));
                     ok++;
@@ -95,10 +102,8 @@ namespace vs_h
                 }
             }
 
-            MessageBox.Show("Đã lưu LogServer cho tất cả model.\nOK: " + ok + "\nFAIL: " + fail);
+            string status = enableUpload ? "BẬT" : "TẮT";
+            MessageBox.Show($"Đã lưu LogServer cho tất cả model.\nOK: {ok}\nFAIL: {fail}\nUpload Server: {status}");
         }
-
-
-
     }
 }
